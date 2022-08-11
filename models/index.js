@@ -17,9 +17,19 @@ const SaleStatus = bookshelf.model('SaleStatus', {
   tableName: 'sale_statuses'
 });
 
+const NibFlexibility = bookshelf.model('NibFlexibility', {
+  tableName: 'nib_flexibilities'
+});
+
+const NibSize = bookshelf.model('NibSize', {
+  tableName: 'nib_sizes'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
   CapType,
-  SaleStatus
+  SaleStatus,
+  NibFlexibility,
+  NibSize
 };
