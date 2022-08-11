@@ -38,23 +38,38 @@ const SaleStatus = bookshelf.model('SaleStatus', {
 });
 
 const NibFlexibility = bookshelf.model('NibFlexibility', {
-  tableName: 'nib_flexibilities'
+  tableName: 'nib_flexibilities',
+  variants: function() {
+    return this.hasMany('Variant');
+  }
 });
 
 const NibSize = bookshelf.model('NibSize', {
-  tableName: 'nib_sizes'
+  tableName: 'nib_sizes',
+  variants: function() {
+    return this.hasMany('Variant');
+  }
 });
 
 const NibShape = bookshelf.model('NibShape', {
-  tableName: 'nib_shapes'
+  tableName: 'nib_shapes',
+  variants: function() {
+    return this.hasMany('Variant');
+  }
 });
 
 const NibMaterial = bookshelf.model('NibMaterial', {
-  tableName: 'nib_materials'
+  tableName: 'nib_materials',
+  variants: function() {
+    return this.hasMany('Variant');
+  }
 });
 
 const Color = bookshelf.model('Color', {
-  tableName: 'colors'
+  tableName: 'colors',
+  variants: function() {
+    return this.hasMany('Variant');
+  }
 });
 
 const OrderStatus = bookshelf.model('OrderStatus', {
@@ -81,8 +96,33 @@ const FountainPen = bookshelf.model('FountainPen', {
   },
   fillingMechanisms: function () {
     return this.belongsToMany('FillingMechanism');
+  },
+  variants: function() {
+    return this.hasMany('Variant');
   }
 });
+
+const Variant = bookshelf.model('Variant', {
+  tableName: 'variants',
+  nibMaterial: function() {
+    return this.belongsTo('NibMaterial');
+  },
+  nibShape: function() {
+    return this.belongsTo('NibShape');
+  },
+  nibSize: function() {
+    return this.belongsTo('NibSize');
+  },
+  nibFlexibility: function() {
+    return this.belongsTo('NibFlexibility');
+  },
+  color: function() {
+    return this.belongsTo('Color');
+  },
+  fountainPen: function() {
+    return this.belongsTo('FountainPen');
+  }
+})
 
 module.exports = {
   Brand,
@@ -97,5 +137,6 @@ module.exports = {
   Color,
   OrderStatus,
   Role,
-  FountainPen
+  FountainPen,
+  Variant
 };
