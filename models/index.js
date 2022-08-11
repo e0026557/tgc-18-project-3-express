@@ -33,6 +33,10 @@ const NibMaterial = bookshelf.model('NibMaterial', {
   tableName: 'nib_materials'
 });
 
+const Color = bookshelf.model('Color', {
+  tableName: 'colors'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
@@ -41,5 +45,6 @@ module.exports = {
   NibFlexibility,
   NibSize,
   NibShape,
-  NibMaterial
+  NibMaterial,
+  Color
 };
