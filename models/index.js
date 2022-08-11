@@ -13,8 +13,13 @@ const CapType = bookshelf.model('CapType', {
   tableName: 'cap_types'
 });
 
+const SaleStatus = bookshelf.model('SaleStatus', {
+  tableName: 'sale_statuses'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
-  CapType
+  CapType,
+  SaleStatus
 };
