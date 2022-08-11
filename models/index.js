@@ -45,6 +45,10 @@ const Role = bookshelf.model('Role', {
   tableName: 'roles'
 });
 
+const FountainPen = bookshelf.model('FountainPen', {
+  tableName: 'fountain_pens'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
@@ -56,5 +60,6 @@ module.exports = {
   NibMaterial,
   Color,
   OrderStatus,
-  Role
+  Role,
+  FountainPen
 };
