@@ -1,6 +1,11 @@
 // *** DEPENDENCIES ***
 const bookshelf = require('../bookshelf');
 
+// *** Models ***
+const Brand = bookshelf.model('Brand', {
+  tableName: 'brands'
+});
+
 const Property = bookshelf.model('Property', {
   tableName: 'properties'
 });
@@ -50,6 +55,7 @@ const FountainPen = bookshelf.model('FountainPen', {
 });
 
 module.exports = {
+  Brand,
   Property,
   FillingMechanism,
   CapType,
