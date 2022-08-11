@@ -10,7 +10,10 @@ const Brand = bookshelf.model('Brand', {
 });
 
 const Property = bookshelf.model('Property', {
-  tableName: 'properties'
+  tableName: 'properties',
+  fountainPens: function () {
+    return this.belongsToMany('FountainPen');
+  }
 });
 
 const FillingMechanism = bookshelf.model('FillingMechanism', {
@@ -69,6 +72,9 @@ const FountainPen = bookshelf.model('FountainPen', {
   },
   capType: function () {
     return this.belongsTo('CapType');
+  },
+  properties: function () {
+    return this.belongsToMany('Property');
   }
 });
 
