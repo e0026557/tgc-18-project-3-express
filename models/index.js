@@ -25,11 +25,21 @@ const NibSize = bookshelf.model('NibSize', {
   tableName: 'nib_sizes'
 });
 
+const NibShape = bookshelf.model('NibShape', {
+  tableName: 'nib_shapes'
+});
+
+const NibMaterial = bookshelf.model('NibMaterial', {
+  tableName: 'nib_materials'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
   CapType,
   SaleStatus,
   NibFlexibility,
-  NibSize
+  NibSize,
+  NibShape,
+  NibMaterial
 };
