@@ -41,6 +41,10 @@ const OrderStatus = bookshelf.model('OrderStatus', {
   tableName: 'order_statuses'
 });
 
+const Role = bookshelf.model('Role', {
+  tableName: 'roles'
+});
+
 module.exports = {
   Property,
   FillingMechanism,
@@ -51,5 +55,6 @@ module.exports = {
   NibShape,
   NibMaterial,
   Color,
-  OrderStatus
+  OrderStatus,
+  Role
 };
