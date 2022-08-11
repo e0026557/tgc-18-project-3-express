@@ -3,7 +3,10 @@ const bookshelf = require('../bookshelf');
 
 // *** Models ***
 const Brand = bookshelf.model('Brand', {
-  tableName: 'brands'
+  tableName: 'brands',
+  fountainPens: function () {
+    return this.hasMany('FountainPen');
+  }
 });
 
 const Property = bookshelf.model('Property', {
@@ -15,11 +18,17 @@ const FillingMechanism = bookshelf.model('FillingMechanism', {
 });
 
 const CapType = bookshelf.model('CapType', {
-  tableName: 'cap_types'
+  tableName: 'cap_types',
+  fountainPens: function () {
+    return this.hasMany('FountainPen');
+  }
 });
 
 const SaleStatus = bookshelf.model('SaleStatus', {
-  tableName: 'sale_statuses'
+  tableName: 'sale_statuses',
+  fountainPens: function () {
+    return this.hasMany('FountainPen');
+  }
 });
 
 const NibFlexibility = bookshelf.model('NibFlexibility', {
@@ -51,7 +60,16 @@ const Role = bookshelf.model('Role', {
 });
 
 const FountainPen = bookshelf.model('FountainPen', {
-  tableName: 'fountain_pens'
+  tableName: 'fountain_pens',
+  brand: function () {
+    return this.belongsTo('Brand');
+  },
+  saleStatus: function () {
+    return this.belongsTo('SaleStatus');
+  },
+  capType: function () {
+    return this.belongsTo('CapType');
+  }
 });
 
 module.exports = {
