@@ -1,4 +1,5 @@
 // *** DEPENDENCIES ***
+const { model } = require('../bookshelf');
 const bookshelf = require('../bookshelf');
 
 // *** Models ***
@@ -73,7 +74,10 @@ const Color = bookshelf.model('Color', {
 });
 
 const OrderStatus = bookshelf.model('OrderStatus', {
-  tableName: 'order_statuses'
+  tableName: 'order_statuses',
+  orders: function () {
+    return this.hasMany('Order');
+  }
 });
 
 const Role = bookshelf.model('Role', {
@@ -137,6 +141,9 @@ const User = bookshelf.model('User', {
   },
   cartItems: function () {
     return this.hasMany('CartItem');
+  },
+  orders: function () {
+    return this.hasMany('Order');
   }
 });
 
@@ -148,7 +155,17 @@ const CartItem = bookshelf.model('CartItem', {
   variant: function () {
     return this.belongsTo('Variant');
   }
-})
+});
+
+const Order = bookshelf.model('Order', {
+  tableName: 'orders',
+  user: function () {
+    return this.belongsTo('User');
+  },
+  orderStatus: function () {
+    return this.belongsTo('OrderStatus');
+  }
+});
 
 module.exports = {
   Brand,
@@ -166,5 +183,6 @@ module.exports = {
   FountainPen,
   Variant,
   User,
-  CartItem
+  CartItem,
+  Order
 };
