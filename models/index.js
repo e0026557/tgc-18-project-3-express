@@ -124,13 +124,29 @@ const Variant = bookshelf.model('Variant', {
   },
   fountainPen: function () {
     return this.belongsTo('FountainPen');
+  },
+  cartItems: function () {
+    return this.hasMany('CartItem');
   }
-})
+});
 
 const User = bookshelf.model('User', {
   tableName: 'users',
   role: function () {
     return this.belongsTo('Role');
+  },
+  cartItems: function () {
+    return this.hasMany('CartItem');
+  }
+});
+
+const CartItem = bookshelf.model('CartItem', {
+  tableName: 'cart_items',
+  user: function () {
+    return this.belongsTo('User');
+  },
+  variant: function () {
+    return this.belongsTo('Variant');
   }
 })
 
@@ -148,5 +164,7 @@ module.exports = {
   OrderStatus,
   Role,
   FountainPen,
-  Variant
+  Variant,
+  User,
+  CartItem
 };
