@@ -14,13 +14,13 @@ require('dotenv').config();
 
 // *** SETUP ***
 // Create instance of Express app
-const app = express(); 
+const app = express();
 
 // Set hbs as view engine
-app.set('view engine', 'hbs'); 
+app.set('view engine', 'hbs');
 
 // Set up static folder
-app.set(express.static('public')); 
+app.use(express.static('public'));
 
 // Set up wax-on for template inheritance
 wax.on(hbs.handlebars);
@@ -30,12 +30,12 @@ const PORT = process.env.PORT || 3000;
 
 // *** GLOBAL MIDDLEWARES ***
 // Enable cross-site origin resource sharing
-app.use(cors()); 
+app.use(cors());
 
 // Enable form processing (required for CSRF token to work in forms)
 app.use(express.urlencoded({
   extended: false
-})); 
+}));
 
 // Set up sessions
 app.use(session({
@@ -43,10 +43,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET, // used to generate session id
   resave: false, // whether to recreate the session even if there is no change to it
   saveUninitialized: true // whether to create a new session when a new browser connects
-})); 
+}));
 
 // Set up flash messages (requires sessions)
-app.use(flash()); 
+app.use(flash());
 
 // Share flash messages with hbs files
 app.use(function (req, res, next) {
@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
   res.locals.success_messages = req.flash('success_messages');
   res.locals.error_messages = req.flash('error_messages');
   next();
-}); 
+});
 
 //  Enable CSRF protection
 const csrfInstance = csrf();
@@ -75,19 +75,27 @@ app.use(function (req, res, next) {
     res.locals.csrfToken = req.csrfToken();
   }
   next();
-}); 
+});
 
 // Share user data across all hbs files
 app.use(function (req, res, next) {
   res.locals.user = req.session.user;
   next();
-}); 
-
-
-app.get('/', function(req, res) {
-  res.send('hello world');
 });
 
-app.listen(PORT, function() {
+// *** ROUTES ***
+const landingRoutes = require('./routes/landing');
+const productRoutes = require('./routes/products');
+const orderRoutes = require('./routes/orders');
+const accountRoutes = require('./routes/accounts');
+
+app.use('/', landingRoutes);
+app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
+app.use('/accounts', accountRoutes);
+
+
+// *** SERVER ***
+app.listen(PORT, function () {
   console.log('Server has started')
 })
