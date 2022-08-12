@@ -131,6 +131,9 @@ const Variant = bookshelf.model('Variant', {
   },
   cartItems: function () {
     return this.hasMany('CartItem');
+  },
+  orderItems: function () {
+    return this.hasMany('OrderItem');
   }
 });
 
@@ -164,8 +167,21 @@ const Order = bookshelf.model('Order', {
   },
   orderStatus: function () {
     return this.belongsTo('OrderStatus');
+  },
+  orderItems: function () {
+    return this.hasMany('OrderItem');
   }
 });
+
+const OrderItem = bookshelf.model('OrderItem', {
+  tableName: 'order_items',
+  order: function () {
+    return this.belongsTo('Order');
+  },
+  variant: function () {
+    return this.belongsTo('Variant');
+  }
+})
 
 module.exports = {
   Brand,
@@ -184,5 +200,6 @@ module.exports = {
   Variant,
   User,
   CartItem,
-  Order
+  Order,
+  OrderItem
 };
