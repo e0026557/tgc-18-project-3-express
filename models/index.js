@@ -39,35 +39,35 @@ const SaleStatus = bookshelf.model('SaleStatus', {
 
 const NibFlexibility = bookshelf.model('NibFlexibility', {
   tableName: 'nib_flexibilities',
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
 
 const NibSize = bookshelf.model('NibSize', {
   tableName: 'nib_sizes',
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
 
 const NibShape = bookshelf.model('NibShape', {
   tableName: 'nib_shapes',
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
 
 const NibMaterial = bookshelf.model('NibMaterial', {
   tableName: 'nib_materials',
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
 
 const Color = bookshelf.model('Color', {
   tableName: 'colors',
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
@@ -77,7 +77,10 @@ const OrderStatus = bookshelf.model('OrderStatus', {
 });
 
 const Role = bookshelf.model('Role', {
-  tableName: 'roles'
+  tableName: 'roles',
+  users: function () {
+    return this.hasMany('User');
+  }
 });
 
 const FountainPen = bookshelf.model('FountainPen', {
@@ -97,30 +100,37 @@ const FountainPen = bookshelf.model('FountainPen', {
   fillingMechanisms: function () {
     return this.belongsToMany('FillingMechanism');
   },
-  variants: function() {
+  variants: function () {
     return this.hasMany('Variant');
   }
 });
 
 const Variant = bookshelf.model('Variant', {
   tableName: 'variants',
-  nibMaterial: function() {
+  nibMaterial: function () {
     return this.belongsTo('NibMaterial');
   },
-  nibShape: function() {
+  nibShape: function () {
     return this.belongsTo('NibShape');
   },
-  nibSize: function() {
+  nibSize: function () {
     return this.belongsTo('NibSize');
   },
-  nibFlexibility: function() {
+  nibFlexibility: function () {
     return this.belongsTo('NibFlexibility');
   },
-  color: function() {
+  color: function () {
     return this.belongsTo('Color');
   },
-  fountainPen: function() {
+  fountainPen: function () {
     return this.belongsTo('FountainPen');
+  }
+})
+
+const User = bookshelf.model('User', {
+  tableName: 'users',
+  role: function () {
+    return this.belongsTo('Role');
   }
 })
 
