@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const dataLayer = require('../dal/products');
+const { createProductForm, bootstrapField, createVariantForm } = require('../forms');
 
 // *** ROUTES ***
 
@@ -31,6 +32,33 @@ router.get('/', async function (req, res) {
   res.render('products/index', {
     products: products
   });
+});
+
+router.get('/create', async function (req, res) {
+  const brands = await dataLayer.getAllBrands();
+  const capTypes = await dataLayer.getAllCapTypes();
+  const properties = await dataLayer.getAllProperties();
+  const fillingMechanisms = await dataLayer.getAllFillingMechanisms();
+
+  const attributes = {
+    brands,
+    capTypes,
+    properties,
+    fillingMechanisms
+  };
+
+  const productForm = createProductForm(attributes);
+
+  res.render('products/create', {
+    form: productForm.toHTML(bootstrapField),
+  });
+})
+
+// TODO
+router.get('/:product_id/variants', async function (req, res) {
+  const product = (await dataLayer.getProductById(req.params.product_id)).toJSON();
+
+  res.render('products/variants');
 });
 
 module.exports = router;
