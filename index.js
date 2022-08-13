@@ -19,6 +19,9 @@ const app = express();
 // Set hbs as view engine
 app.set('view engine', 'hbs');
 
+// Set hbs partials
+hbs.registerPartials('./views/partials');
+
 // Set up static folder
 app.use(express.static('public'));
 
