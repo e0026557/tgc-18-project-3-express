@@ -113,6 +113,36 @@ const getAllNibMaterials = async function () {
   return materials;
 }
 
+const getAllProductFormChoices = async function () {
+  const brands = await getAllBrands();
+  const capTypes = await getAllCapTypes();
+  const properties = await getAllProperties();
+  const fillingMechanisms = await getAllFillingMechanisms();
+
+  return {
+    brands,
+    capTypes,
+    properties,
+    fillingMechanisms
+  };
+}
+
+const getAllVariantFormChoices = async function () {
+  const nibMaterials = await getAllNibMaterials();
+  const nibFlexibilities = await getAllNibFlexibilities();
+  const nibSizes = await getAllNibSizes();
+  const nibShapes = await getAllNibShapes();
+  const colors = await getAllColors();
+
+  return {
+    nibFlexibilities,
+    nibMaterials,
+    nibShapes,
+    nibSizes,
+    colors
+  }
+}
+
 const getProductById = async function (productId) {
   const product = await FountainPen.where({
     id: productId
@@ -143,5 +173,7 @@ module.exports = {
   getAllNibSizes,
   getAllNibShapes,
   getAllNibMaterials,
+  getAllProductFormChoices,
+  getAllVariantFormChoices,
   getProductById
 };
