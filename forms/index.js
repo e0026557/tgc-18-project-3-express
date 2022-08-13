@@ -31,13 +31,13 @@ const bootstrapField = function (name, object) {
 
 // Attributes of product
 // -> brands, properties, fillingMechanisms, capTypes, saleStatus (default is active)
-const createProductForm = (attributes) => {
+const createProductForm = (choices) => {
   return forms.create({
     brand_id: fields.string({
       label: 'Brand',
       required: true,
       errorAfterField: true,
-      choices: attributes.brands,
+      choices: choices.brands,
       widget: widgets.select()
     }),
     model: fields.string({
@@ -67,20 +67,20 @@ const createProductForm = (attributes) => {
       label: 'Cap Type',
       required: true,
       errorAfterField: true,
-      choices: attributes.capTypes,
+      choices: choices.capTypes,
       widget: widgets.select()
     }),
     fillingMechanisms: fields.string({
       label: 'Filling Mechanism(s)',
       required: true,
       errorAfterField: true,
-      choices: attributes.fillingMechanisms,
+      choices: choices.fillingMechanisms,
       widget: widgets.multipleSelect()
     }),
     properties: fields.string({
       required: true,
       errorAfterField: true,
-      choices: attributes.properties,
+      choices: choices.properties,
       widget: widgets.multipleSelect()
     }),
     description: fields.string({
@@ -98,41 +98,41 @@ const createProductForm = (attributes) => {
 
 // Attributes of variant
 // -> fountainPenId (retrieve from req.params or from creation of new product), nibMaterials, nibShapes, nibFlexibilities, nibSizes, colors
-const createVariantForm = (attributes) => {
+const createVariantForm = (choices) => {
   return forms.create({
     nib_size_id: fields.string({
       label: 'Nib Size',
       required: true,
       errorAfterField: true,
-      choices: attributes.nibSizes,
+      choices: choices.nibSizes,
       widget: widgets.select()
     }),
     nib_shape_id: fields.string({
       label: 'Nib Shape',
       required: true,
       errorAfterField: true,
-      choices: attributes.nibShapes,
+      choices: choices.nibShapes,
       widget: widgets.select()
     }),
     nib_flexibility_id: fields.string({
       label: 'Nib Flexibility',
       required: true,
       errorAfterField: true,
-      choices: attributes.nibFlexibilities,
+      choices: choices.nibFlexibilities,
       widget: widgets.select()
     }),
     nib_material_id: fields.string({
       label: 'Nib Material',
       required: true,
       errorAfterField: true,
-      choices: attributes.nibMaterials,
+      choices: choices.nibMaterials,
       widget: widgets.select()
     }),
     color_id: fields.string({
       label: 'Color',
       required: true,
       errorAfterField: true,
-      choices: attributes.colors,
+      choices: choices.colors,
       widget: widgets.select()
     }),
     cost: fields.number({
