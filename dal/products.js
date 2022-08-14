@@ -67,15 +67,15 @@ const getAllCapTypes = async function () {
 };
 
 const getAllSaleStatuses = async function () {
-  const saleStatuses = await SaleStatus.fetchAll().map(saleStatus => {
+  const saleStatuses = await SaleStatus.fetchAll().map((saleStatus) => {
     return [saleStatus.get('id'), saleStatus.get('sale_status')];
   });
 
   return saleStatuses;
-}
+};
 
 const getAllColors = async function () {
-  const colors = await Color.fetchAll().map(color => {
+  const colors = await Color.fetchAll().map((color) => {
     return [color.get('id'), color.get('color')];
   });
 
@@ -83,36 +83,36 @@ const getAllColors = async function () {
 };
 
 const getAllNibFlexibilities = async function () {
-  const nibFlexibilities = await NibFlexibility.fetchAll().map(flex => {
+  const nibFlexibilities = await NibFlexibility.fetchAll().map((flex) => {
     return [flex.get('id'), flex.get('nib_flexibility')];
-  })
+  });
 
   return nibFlexibilities;
-}
+};
 
 const getAllNibSizes = async function () {
-  const sizes = await NibSize.fetchAll().map(size => {
+  const sizes = await NibSize.fetchAll().map((size) => {
     return [size.get('id'), size.get('nib_size')];
   });
 
   return sizes;
-}
+};
 
 const getAllNibShapes = async function () {
-  const shapes = await NibShape.fetchAll().map(shape => {
+  const shapes = await NibShape.fetchAll().map((shape) => {
     return [shape.get('id'), shape.get('nib_shape')];
   });
 
   return shapes;
-}
+};
 
 const getAllNibMaterials = async function () {
-  const materials = await NibMaterial.fetchAll().map(material => {
+  const materials = await NibMaterial.fetchAll().map((material) => {
     return [material.get('id'), material.get('nib_material')];
-  })
+  });
 
   return materials;
-}
+};
 
 const getAllProductFormChoices = async function () {
   const brands = await getAllBrands();
@@ -126,7 +126,7 @@ const getAllProductFormChoices = async function () {
     properties,
     fillingMechanisms
   };
-}
+};
 
 const getAllVariantFormChoices = async function () {
   const nibMaterials = await getAllNibMaterials();
@@ -141,30 +141,53 @@ const getAllVariantFormChoices = async function () {
     nibShapes,
     nibSizes,
     colors
-  }
-}
+  };
+};
 
 const getProductById = async function (productId) {
-  const product = await FountainPen.where({
-    id: productId
-  }).fetch({
-    withRelated: [
-      'brand',
-      'capType',
-      'variants',
-      'properties',
-      'fillingMechanisms',
-      'saleStatus'
-    ],
-    require: true
-  });
+  try {
+    const product = await FountainPen.where({
+      id: productId
+    }).fetch({
+      withRelated: [
+        'brand',
+        'capType',
+        'variants',
+        'properties',
+        'fillingMechanisms',
+        'saleStatus'
+      ],
+      require: true
+    });
 
-  return product;
+    return product;
+  } catch (error) {
+    return false;
+  }
 };
 
 const getVariantsByProductId = async function (productId) {
-  const variants = await Variant.collection().where({
-    fountain_pen_id: productId
+  const variants = await Variant.collection()
+    .where({
+      fountain_pen_id: productId
+    })
+    .fetch({
+      require: true,
+      withRelated: [
+        'nibMaterial',
+        'nibShape',
+        'nibSize',
+        'nibFlexibility',
+        'color'
+      ]
+    });
+
+  return variants;
+};
+
+const getVariantById = async function (variantId) {
+  const variant = await Variant.where({
+    id: variantId
   }).fetch({
     require: true,
     withRelated: [
@@ -176,7 +199,7 @@ const getVariantsByProductId = async function (productId) {
     ]
   });
 
-  return variants;
+  return variant;
 }
 
 const addProduct = async function (formData) {
@@ -192,19 +215,41 @@ const addProduct = async function (formData) {
   }
 
   if (fillingMechanisms) {
-    await product
-      .fillingMechanisms()
-      .attach(fillingMechanisms.split(','));
+    await product.fillingMechanisms().attach(fillingMechanisms.split(','));
   }
 
   return product;
-}
+};
 
 const addVariant = async function (formData) {
   const variant = new Variant(formData);
   await variant.save();
 
   return variant;
+};
+
+const deleteProduct = async function (productId) {
+  // Check that product to be deleted exists and has no variants
+  const product = await getProductById(productId);
+
+  if (!product || product.toJSON().variants.length > 0) {
+    return;
+  }
+
+  await product.destroy();
+  return true; // Indicate success
+};
+
+const deleteVariant = async function (variantId) {
+  // Check that variant to be deleted exists
+  const variant = await getVariantById(variantId);
+
+  if (!variant) {
+    return;
+  }
+
+  await variant.destroy();
+  return true;
 }
 
 module.exports = {
@@ -222,7 +267,10 @@ module.exports = {
   getAllProductFormChoices,
   getAllVariantFormChoices,
   getProductById,
+  getVariantById,
   getVariantsByProductId,
   addProduct,
-  addVariant
+  addVariant,
+  deleteProduct,
+  deleteVariant
 };
