@@ -8,9 +8,11 @@ const {
   bootstrapField,
   createVariantForm
 } = require('../forms');
-const { FountainPen, Variant } = require('../models');
+// const { FountainPen, Variant } = require('../models');
 
 // *** ROUTES ***
+
+// --- Products ---
 
 router.get('/', async function (req, res) {
   // Fetch all products and convert to JSON format
@@ -27,17 +29,17 @@ router.get('/', async function (req, res) {
           (obj) => obj.filling_mechanism
         ),
         // Calculate total stock
-        totalStock: product.variants
+        totalStock: product.variants.length ? product.variants
           .map((obj) => obj.stock)
-          .reduce((prev, curr) => prev + curr),
+          .reduce((prev, curr) => prev + curr) : 0,
         // Calculate max price
-        maxPrice: Math.max(
+        maxPrice: product.variants.length ? Math.max(
           ...product.variants.map((obj) => parseInt(obj.cost))
-        ),
+        ) : 0,
         // Calculate min price
-        minPrice: Math.min(
+        minPrice: product.variants.length ? Math.min(
           ...product.variants.map((obj) => parseInt(obj.cost))
-        )
+        ) : 0
       };
     });
   } catch (error) {
@@ -90,13 +92,31 @@ router.post('/create', async function (req, res) {
   });
 });
 
-// TODO
+router.post('/:product_id/delete', async function (req, res) {
+  const result = await dataLayer.deleteProduct(req.params.product_id);
+
+  if (result) {
+    req.flash('success_messages', 'Product successfully deleted');
+  } else {
+    req.flash(
+      'error_messages',
+      'An error occurred when deleting. Please try again'
+    );
+  }
+
+  res.redirect('/products');
+});
+
+// --- Variants ---
+
 router.get('/:product_id/variants', async function (req, res) {
   const product = (
     await dataLayer.getProductById(req.params.product_id)
   ).toJSON();
 
-  const variants = (await dataLayer.getVariantsByProductId(req.params.product_id)).toJSON();
+  const variants = (
+    await dataLayer.getVariantsByProductId(req.params.product_id)
+  ).toJSON();
 
   // console.log(product);
   res.render('products/variants', {
@@ -147,6 +167,19 @@ router.post('/:product_id/variants/create', async function (req, res) {
       });
     }
   });
+});
+
+router.post('/:product_id/variants/:variant_id/delete', async function (req, res) {
+  const result = await dataLayer.deleteVariant(req.params.variant_id);
+
+  if (result) {
+    req.flash('success_messages', 'Variant successfully deleted');
+  }
+  else {
+    req.flash('error_messages', 'An error occurred when deleting. Please try again');
+  }
+
+  res.redirect(`/products/${req.params.product_id}/variants`);
 })
 
 module.exports = router;
