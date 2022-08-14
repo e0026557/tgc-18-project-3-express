@@ -33,6 +33,9 @@
         form.method = 'post';
         form.action = `/products/${event.target.dataset.productId}/delete`;
 
+        let csrfToken = `{{> csrfToken}}`;
+        form.innerHTML = csrfToken;
+
         if (deleteTarget == 'variant') {
           form.action = `/products/${event.target.dataset.productId}/variants/${event.target.dataset.variantId}`;
         }
