@@ -10,7 +10,8 @@ const {
   NibFlexibility,
   NibSize,
   NibShape,
-  NibMaterial
+  NibMaterial,
+  Variant
 } = require('../models');
 
 // *** FUNCTIONS ***
@@ -161,6 +162,23 @@ const getProductById = async function (productId) {
   return product;
 };
 
+const getVariantsByProductId = async function (productId) {
+  const variants = await Variant.collection().where({
+    fountain_pen_id: productId
+  }).fetch({
+    require: true,
+    withRelated: [
+      'nibMaterial',
+      'nibShape',
+      'nibSize',
+      'nibFlexibility',
+      'color'
+    ]
+  });
+
+  return variants;
+}
+
 module.exports = {
   getAllProducts,
   getAllProperties,
@@ -175,5 +193,6 @@ module.exports = {
   getAllNibMaterials,
   getAllProductFormChoices,
   getAllVariantFormChoices,
-  getProductById
+  getProductById,
+  getVariantsByProductId
 };
