@@ -86,6 +86,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+// Share Cloudinary data across all hbs files
+app.use(function (req, res, next) {
+  res.locals.cloudinaryName = process.env.CLOUDINARY_NAME;
+  res.locals.cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
+  res.locals.cloudinaryPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
+  next();
+})
+
 // *** ROUTES ***
 const landingRoutes = require('./routes/landing');
 const productRoutes = require('./routes/products');
