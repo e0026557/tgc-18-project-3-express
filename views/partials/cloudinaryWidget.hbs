@@ -1,7 +1,17 @@
 <div class="my-3">
+
+  {{#if object.thumbnail_url}}
+  <div id="uploaded_image_preview">
+    <span class="mb-1">Image preview: </span>
+    <img src="{{object.thumbnail_url}}" id="uploaded_image">
+  </div>
+
+  {{else}}
   <div id="uploaded_image_preview" style="display: none">
     <span class="mb-1">Image preview: </span>
     <img src="" id="uploaded_image">
   </div>
+  {{/if}}
+
   <a href="#" class="btn btn-primary mt-3" id="upload_widget">Upload</a>
 </div>
