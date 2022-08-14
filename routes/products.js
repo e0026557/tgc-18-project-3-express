@@ -71,22 +71,8 @@ router.post('/create', async function (req, res) {
   // Handle product form
   productForm.handle(req, {
     success: async function (form) {
-      // Extract product data from form data
-      const { properties, fillingMechanisms, ...productData } = form.data;
-
-      const product = new FountainPen(productData);
-      const newProduct = (await product.save()).toJSON();
-
-      // Attach m:m relationships
-      if (properties) {
-        await product.properties().attach(properties.split(','));
-      }
-
-      if (fillingMechanisms) {
-        await product
-          .fillingMechanisms()
-          .attach(fillingMechanisms.split(','));
-      }
+      // Create new product
+      const newProduct = await dataLayer.addProduct(form.data);
 
       req.flash('success_messages', 'New product added successfully');
       res.redirect(`/products/${newProduct.id}/variants/create`);
@@ -138,10 +124,14 @@ router.post('/:product_id/variants/create', async function (req, res) {
   // Handle variant form
   variantForm.handle(req, {
     success: async function (form) {
-      const variant = new Variant(form.data);
-      variant.set('fountain_pen_id', parseInt(req.params.product_id));
+      // Collate variant data
+      const variantData = {
+        ...form.data,
+        fountain_pen_id: req.params.product_id
+      };
 
-      await variant.save();
+      // Create new variant
+      await dataLayer.addVariant(variantData);
 
       req.flash('success_messages', 'New variant added successfully');
       res.redirect('/products');
