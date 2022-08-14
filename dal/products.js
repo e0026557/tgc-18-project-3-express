@@ -167,22 +167,27 @@ const getProductById = async function (productId) {
 };
 
 const getVariantsByProductId = async function (productId) {
-  const variants = await Variant.collection()
-    .where({
-      fountain_pen_id: productId
-    })
-    .fetch({
-      require: true,
-      withRelated: [
-        'nibMaterial',
-        'nibShape',
-        'nibSize',
-        'nibFlexibility',
-        'color'
-      ]
-    });
+  try {
+    const variants = await Variant.collection()
+      .where({
+        fountain_pen_id: productId
+      })
+      .fetch({
+        require: true,
+        withRelated: [
+          'nibMaterial',
+          'nibShape',
+          'nibSize',
+          'nibFlexibility',
+          'color'
+        ]
+      });
 
-  return variants;
+    return variants;
+  } catch (error) {
+    return false;
+  }
+
 };
 
 const getVariantById = async function (variantId) {

@@ -114,9 +114,14 @@ router.get('/:product_id/variants', async function (req, res) {
     await dataLayer.getProductById(req.params.product_id)
   ).toJSON();
 
-  const variants = (
-    await dataLayer.getVariantsByProductId(req.params.product_id)
-  ).toJSON();
+  let variants = await dataLayer.getVariantsByProductId(req.params.product_id);
+
+  if (variants) {
+    variants = variants.toJSON();
+  }
+  else {
+    variants = [];
+  }
 
   // console.log(product);
   res.render('products/variants', {
