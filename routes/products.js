@@ -1,5 +1,6 @@
 //  *** DEPENDENCIES ***
 const express = require('express');
+const { createPoolCluster } = require('mysql');
 const router = express.Router();
 
 const dataLayer = require('../dal/products');
@@ -89,6 +90,41 @@ router.post('/create', async function (req, res) {
         form: form.toHTML(bootstrapField)
       });
     }
+  });
+});
+
+// TODO
+router.get('/:product_id/update', async function (req, res) {
+  // Get product to be updated
+  const product = await dataLayer.getProductById(req.params.product_id);
+
+  // Fetch all choices for product form
+  const choices = await dataLayer.getAllProductFormChoices();
+
+  // Create product form and populate with existing data
+  const productForm = createProductForm(choices);
+
+  productForm.fields.brand_id.value = product.get('brand_id');
+  productForm.fields.model.value = product.get('model');
+  productForm.fields.length.value = product.get('length');
+  productForm.fields.diameter.value = product.get('diameter');
+  productForm.fields.weight.value = product.get('weight');
+  productForm.fields.cap_type_id.value = product.get('cap_type_id');
+  productForm.fields.description.value = product.get('description');
+  productForm.fields.image_url.value = product.get('image_url');
+  productForm.fields.thumbnail_url.value = product.get('thumbnail_url');
+
+  // Filling mechanisms
+  let selectedFillingMechanisms = await product.related('fillingMechanisms').pluck('id');
+  productForm.fields.fillingMechanisms.value = selectedFillingMechanisms;
+
+  // Properties
+  let selectedProperties = await product.related('properties').pluck('id');
+  productForm.fields.properties.value = selectedProperties;
+
+  res.render('products/update', {
+    product: product.toJSON(),
+    form: productForm.toHTML(bootstrapField)
   });
 });
 

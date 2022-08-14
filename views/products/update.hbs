@@ -1,0 +1,25 @@
+{{#extends 'base'}}
+
+{{#block 'subtitle'}}
+Update Product
+{{/block}}
+
+{{#block 'content'}}
+
+<h1>Update Product</h1>
+
+<form method="post">
+  {{{form}}}
+  {{> csrfToken}}
+  {{> cloudinaryWidget object=product }}
+  <input type="submit" value="Update Product" class="btn btn-primary my-3">
+</form>
+
+{{/block}}
+
+{{!-- Javascript Block --}}
+{{#block 'js'}}
+{{> cloudinaryWidgetJs}}
+{{/block}}
+
+{{/extends}}
