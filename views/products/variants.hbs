@@ -63,13 +63,17 @@ Products
       <td>{{this.stock}}</td>
       <td>
         <a href="/products/{{this.fountain_pen_id}}/variants/update" class="btn btn-primary btn-sm">Edit</a>
-        <a href="/products/{{this.fountain_pen_id}}/variants/delete" class="btn btn-danger btn-sm">Delete</a>
+        <a href="/products/{{this.fountain_pen_id}}/variants/delete" data-product-id="{{this.fountain_pen_id}}" data-variant-id="{{this.id}}" class="btn btn-danger btn-sm btn-delete">Delete</a>
       </td>
     </tr>
     {{/each}}
   </tbody>
 </table>
 
+{{/block}}
+
+{{#block 'js'}}
+  {{> sweetAlertJs deleteTarget='variant'}}
 {{/block}}
 
 {{/extends}}
