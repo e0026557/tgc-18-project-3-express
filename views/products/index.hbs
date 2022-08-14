@@ -65,7 +65,13 @@ Products
         <br />
       </td>
       <td>{{this.totalStock}}</td>
-      <td>${{divide this.minPrice 100}} ~ ${{divide this.maxPrice 100}}</td>
+      <td>
+        {{#if this.maxPrice}}
+        ${{divide this.minPrice 100}} ~ ${{divide this.maxPrice 100}}
+        {{else}}
+        N/A
+        {{/if}}
+        </td>
       <td>{{this.saleStatus.sale_status}}</td>
       <td>
         <a href='/products/{{this.id}}/variants' class='btn btn-primary btn-sm'>Variants</a> <br />
