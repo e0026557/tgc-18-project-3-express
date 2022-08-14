@@ -3,8 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 const dataLayer = require('../dal/products');
-const { createProductForm, bootstrapField, createVariantForm } = require('../forms');
-const { FountainPen } = require('../models');
+const {
+  createProductForm,
+  bootstrapField,
+  createVariantForm
+} = require('../forms');
+const { FountainPen, Variant } = require('../models');
 
 // *** ROUTES ***
 
@@ -23,22 +27,23 @@ router.get('/', async function (req, res) {
           (obj) => obj.filling_mechanism
         ),
         // Calculate total stock
-        totalStock: product.variants.map((obj) => obj.stock).reduce((prev, curr) => prev + curr),
+        totalStock: product.variants
+          .map((obj) => obj.stock)
+          .reduce((prev, curr) => prev + curr),
         // Calculate max price
-        maxPrice: Math.max(...product.variants.map(obj => parseInt(obj.cost))),
+        maxPrice: Math.max(
+          ...product.variants.map((obj) => parseInt(obj.cost))
+        ),
         // Calculate min price
-        minPrice: Math.min(...product.variants.map(obj => parseInt(obj.cost)))
+        minPrice: Math.min(
+          ...product.variants.map((obj) => parseInt(obj.cost))
+        )
       };
     });
   } catch (error) {
     console.log(error);
-
     products = [];
-    req.flash('error_messages', 'Error getting products. Please try again.');
-    res.redirect('/products');
-    return;
   }
-
 
   // console.log(products);
   res.render('products/index', {
@@ -53,11 +58,10 @@ router.get('/create', async function (req, res) {
   const productForm = createProductForm(choices);
 
   res.render('products/create', {
-    form: productForm.toHTML(bootstrapField),
+    form: productForm.toHTML(bootstrapField)
   });
-})
+});
 
-// TODO
 router.post('/create', async function (req, res) {
   // Fetch all choices for product form
   const choices = await dataLayer.getAllProductFormChoices();
@@ -79,30 +83,74 @@ router.post('/create', async function (req, res) {
       }
 
       if (fillingMechanisms) {
-        await product.fillingMechanisms().attach(fillingMechanisms.split(','));
+        await product
+          .fillingMechanisms()
+          .attach(fillingMechanisms.split(','));
       }
 
       req.flash('success_messages', 'New product added successfully');
-      res.redirect('/products/newProduct.id/variants/create');
+      res.redirect(`/products/${newProduct.id}/variants/create`);
     },
     error: async function (form) {
       res.render('products/create', {
         form: form.toHTML(bootstrapField)
-      })
+      });
     },
     empty: async function (form) {
       res.render('products/create', {
         form: form.toHTML(bootstrapField)
-      })
+      });
     }
-  })
+  });
 });
 
 // TODO
 router.get('/:product_id/variants', async function (req, res) {
-  const product = (await dataLayer.getProductById(req.params.product_id)).toJSON();
+  const product = (
+    await dataLayer.getProductById(req.params.product_id)
+  ).toJSON();
 
   res.render('products/variants');
 });
+
+router.get('/:product_id/variants/create', async function (req, res) {
+  // Fetch all choices for variant form
+  const choices = await dataLayer.getAllVariantFormChoices();
+
+  const variantForm = createVariantForm(choices);
+  res.render('products/create-variant', {
+    form: variantForm.toHTML(bootstrapField)
+  });
+});
+
+router.post('/:product_id/variants/create', async function (req, res) {
+  // Fetch all choices for variant form
+  const choices = await dataLayer.getAllVariantFormChoices();
+
+  const variantForm = createVariantForm(choices);
+
+  // Handle variant form
+  variantForm.handle(req, {
+    success: async function (form) {
+      const variant = new Variant(form.data);
+      variant.set('fountain_pen_id', parseInt(req.params.product_id));
+
+      await variant.save();
+      
+      req.flash('success_messages', 'New variant added successfully');
+      res.redirect('/products');
+    },
+    error: function (form) {
+      res.render('products/create-variant', {
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    empty: function (form) {
+      res.render('products/create-variant', {
+        form: form.toHTML(bootstrapField)
+      });
+    }
+  });
+})
 
 module.exports = router;
