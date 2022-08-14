@@ -91,11 +91,13 @@ const landingRoutes = require('./routes/landing');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const accountRoutes = require('./routes/accounts');
+const cloudinaryRoutes = require('./routes/cloudinary');
 
 app.use('/', landingRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/accounts', accountRoutes);
+app.use('/cloudinary', cloudinaryRoutes);
 
 
 // *** SERVER ***
