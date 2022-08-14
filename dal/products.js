@@ -179,6 +179,34 @@ const getVariantsByProductId = async function (productId) {
   return variants;
 }
 
+const addProduct = async function (formData) {
+  // Extract product data from form data
+  const { properties, fillingMechanisms, ...productData } = formData;
+
+  const product = new FountainPen(productData);
+  await product.save();
+
+  // Attach m:m relationships
+  if (properties) {
+    await product.properties().attach(properties.split(','));
+  }
+
+  if (fillingMechanisms) {
+    await product
+      .fillingMechanisms()
+      .attach(fillingMechanisms.split(','));
+  }
+
+  return product;
+}
+
+const addVariant = async function (formData) {
+  const variant = new Variant(formData);
+  await variant.save();
+
+  return variant;
+}
+
 module.exports = {
   getAllProducts,
   getAllProperties,
@@ -194,5 +222,7 @@ module.exports = {
   getAllProductFormChoices,
   getAllVariantFormChoices,
   getProductById,
-  getVariantsByProductId
+  getVariantsByProductId,
+  addProduct,
+  addVariant
 };
