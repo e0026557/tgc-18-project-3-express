@@ -71,11 +71,11 @@ Products
         {{else}}
         N/A
         {{/if}}
-        </td>
+      </td>
       <td>{{this.saleStatus.sale_status}}</td>
       <td>
         <a href='/products/{{this.id}}/variants' class='btn btn-primary btn-sm'>Variants</a> <br />
-        <a href='/products/{{this.id}}/edit' class='btn btn-sm btn-secondary'>Edit</a>
+        <a href='/products/{{this.id}}/update' class='btn btn-sm btn-secondary'>Edit</a>
         <a href='/products/{{this.id}}/delete' data-product-id="{{this.id}}"
           data-name="{{this.brand.brand}} {{this.model}}" class='btn btn-sm btn-danger btn-delete'>Delete</a>
       </td>
