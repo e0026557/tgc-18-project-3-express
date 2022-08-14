@@ -37,7 +37,7 @@
         form.innerHTML = csrfToken;
 
         if (deleteTarget == 'variant') {
-          form.action = `/products/${event.target.dataset.productId}/variants/${event.target.dataset.variantId}`;
+          form.action = `/products/${event.target.dataset.productId}/variants/${event.target.dataset.variantId}/delete`;
         }
         document.querySelector('body').appendChild(form); // Connect hidden form to document body
         form.submit(); // Submit delete form with a function call
