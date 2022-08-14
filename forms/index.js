@@ -91,10 +91,13 @@ const createProductForm = (choices) => {
       required: true,
       errorAfterField: true
     }),
-    image_url: fields.string({
+    image_url: fields.url({
+      required: validators.required('Variant image is required'),
+      errorAfterField: true,
+      validators: [validators.url()],
       widget: widgets.hidden()
     }),
-    thumbnail_url: fields.string({
+    thumbnail_url: fields.url({
       widget: widgets.hidden()
     })
   }, options)
@@ -150,10 +153,13 @@ const createVariantForm = (choices) => {
       errorAfterField: true,
       validators: [validators.integer(), validators.min(0), validators.max(65535)]
     }),
-    image_url: fields.string({
+    image_url: fields.url({
+      required: validators.required('Variant image is required'),
+      errorAfterField: true,
+      validators: [validators.url()],
       widget: widgets.hidden()
     }),
-    thumbnail_url: fields.string({
+    thumbnail_url: fields.url({
       widget: widgets.hidden()
     })
   }, options);
