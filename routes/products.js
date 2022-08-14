@@ -110,7 +110,13 @@ router.get('/:product_id/variants', async function (req, res) {
     await dataLayer.getProductById(req.params.product_id)
   ).toJSON();
 
-  res.render('products/variants');
+  const variants = (await dataLayer.getVariantsByProductId(req.params.product_id)).toJSON();
+
+  // console.log(product);
+  res.render('products/variants', {
+    product: product,
+    variants: variants
+  });
 });
 
 router.get('/:product_id/variants/create', async function (req, res) {
@@ -136,7 +142,7 @@ router.post('/:product_id/variants/create', async function (req, res) {
       variant.set('fountain_pen_id', parseInt(req.params.product_id));
 
       await variant.save();
-      
+
       req.flash('success_messages', 'New variant added successfully');
       res.redirect('/products');
     },
