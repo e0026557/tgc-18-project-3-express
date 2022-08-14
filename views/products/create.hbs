@@ -11,9 +11,15 @@ Add Product
 <form method="post">
   {{{form}}}
   {{> csrfToken}}
+  {{> cloudinaryWidget}}
   <input type="submit" value="Add Product" class="btn btn-primary my-3">
 </form>
 
+{{/block}}
+
+{{!-- Javascript Block --}}
+{{#block 'js'}}
+{{> cloudinaryWidgetJs}}
 {{/block}}
 
 {{/extends}}
