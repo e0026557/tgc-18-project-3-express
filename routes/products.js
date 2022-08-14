@@ -13,21 +13,32 @@ router.get('/', async function (req, res) {
   let products = (await dataLayer.getAllProducts()).toJSON();
 
   // Format products for displaying in dashboard
-  products = products.map((product) => {
-    return {
-      ...product,
-      // Extract only filling mechanism
-      fillingMechanisms: product.fillingMechanisms.map(
-        (obj) => obj.filling_mechanism
-      ),
-      // Calculate total stock
-      totalStock: product.variants.map((obj) => obj.stock).reduce((prev, curr) => prev + curr),
-      // Calculate max price
-      maxPrice: Math.max(...product.variants.map(obj => parseInt(obj.cost))),
-      // Calculate min price
-      minPrice: Math.min(...product.variants.map(obj => parseInt(obj.cost)))
-    };
-  });
+  // Exception may be thrown when there is a product with no variants
+  try {
+    products = products.map((product) => {
+      return {
+        ...product,
+        // Extract only filling mechanism
+        fillingMechanisms: product.fillingMechanisms.map(
+          (obj) => obj.filling_mechanism
+        ),
+        // Calculate total stock
+        totalStock: product.variants.map((obj) => obj.stock).reduce((prev, curr) => prev + curr),
+        // Calculate max price
+        maxPrice: Math.max(...product.variants.map(obj => parseInt(obj.cost))),
+        // Calculate min price
+        minPrice: Math.min(...product.variants.map(obj => parseInt(obj.cost)))
+      };
+    });
+  } catch (error) {
+    console.log(error);
+
+    products = [];
+    req.flash('error_messages', 'Error getting products. Please try again.');
+    res.redirect('/products');
+    return;
+  }
+
 
   // console.log(products);
   res.render('products/index', {
