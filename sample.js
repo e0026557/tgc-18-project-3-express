@@ -19,3 +19,51 @@ let products = [
     saleStatus: { id: 1, sale_status: 'Active' }
   }
 ];
+
+let product = {
+  s
+    {
+      id: 1,
+      image_url: 'https://cdn.shopify.com/s/files/1/2603/2528/products/Lamy-Studio-ImperialBlue-NW-2_x67.jpg?v=1525274563',
+      thumbnail_url: 'https://cdn.shopify.com/s/files/1/2603/2528/products/Lamy-Studio-ImperialBlue-NW-2_x67.jpg?v=1525274563',
+      cost: 1000,
+      stock: 10,
+      nib_material_id: 1,
+      nib_shape_id: 1,
+      nib_size_id: 1,
+      nib_flexibility_id: 1,
+      color_id: 1,
+      fountain_pen_id: 2
+    },
+    {
+      id: 2,
+      image_url: 'https://cdn.shopify.com/s/files/1/2603/2528/products/Lamy-Studio-ImperialBlue-NW-2_x67.jpg?v=1525274563',
+      thumbnail_url: 'https://cdn.shopify.com/s/files/1/2603/2528/products/Lamy-Studio-ImperialBlue-NW-2_x67.jpg?v=1525274563',
+      cost: 1000,
+      stock: 15,
+      nib_material_id: 1,
+      nib_shape_id: 1,
+      nib_size_id: 1,
+      nib_flexibility_id: 1,
+      color_id: 2,
+      fountain_pen_id: 2
+    }
+  ],
+  properties: [
+    {
+      id: 1,
+      property: 'Postable',
+      _pivot_fountain_pen_id: 2,
+      _pivot_property_id: 1
+    }
+  ],
+  fillingMechanisms: [
+    {
+      id: 1,
+      filling_mechanism: 'Cartridge/Converter',
+      _pivot_fountain_pen_id: 2,
+      _pivot_filling_mechanism_id: 1
+    }
+  ],
+  saleStatus: { id: 1, sale_status: 'Active' }
+};
