@@ -38,11 +38,13 @@
       console.log(result);
       // caolan form id (image)
       document.querySelector('#id_image_url').value = result.info.url; // hidden form field in the hbs file
-      document.querySelector('#uploaded_image').src = result.info.url;
-      document.querySelector('#uploaded_image').style.display = 'block';
 
       // caolan form id (thumbnail)
       document.querySelector('#id_thumbnail_url').value = result.info.thumbnail_url; // hidden form field in the hbs file
+      document.querySelector('#uploaded_image').src = result.info.thumbnail_url;
+
+      // Uploaded image preview section
+      document.querySelector('#uploaded_image_preview').style.display = 'block';
     }
   })
 
