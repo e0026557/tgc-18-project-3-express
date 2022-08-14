@@ -6,6 +6,10 @@ const fields = forms.fields;
 const validators = forms.validators;
 const widgets = forms.widgets;
 
+const options = {
+  validatePastFirstError: true
+};
+
 // Allow of styling of forms using Bootstrap
 const bootstrapField = function (name, object) {
   if (!Array.isArray(object.widget.classes)) { object.widget.classes = []; }
@@ -93,7 +97,7 @@ const createProductForm = (choices) => {
     thumbnail_url: fields.string({
       widget: widgets.hidden()
     })
-  })
+  }, options)
 };
 
 // Attributes of variant
@@ -152,7 +156,7 @@ const createVariantForm = (choices) => {
     thumbnail_url: fields.string({
       widget: widgets.hidden()
     })
-  });
+  }, options);
 }
 
 module.exports = {
