@@ -310,6 +310,50 @@ const deleteVariant = async function (variantId) {
   return true;
 }
 
+const filterProductsBySearchFields = async function (form) {
+  // Create query builder
+  let query = FountainPen.collection();
+
+  if (form.data.brand_id && form.data.brand_id != 0) {
+    query.where('brand_id', '=', form.data.brand_id)
+  }
+
+  if (form.data.model) {
+    // MySQL syntax (case insensitive by default)
+    if (process.env.DB_DRIVER == 'mysql') {
+      query.where('model', 'like', `%${form.data.model}%`);
+    }
+    else {
+      query.where('model', 'ilike', `%${form.data.model}%`);
+    }
+  }
+
+  if (form.data.sale_status_id && form.data.sale_status_id != 0) {
+    query.where('sale_status_id', '=', form.data.sale_status_id);
+  }
+
+  if (form.data.cap_type_id && form.data.cap_type_id != 0) {
+    query.where('cap_type_id', '=', form.data.cap_type_id);
+  }
+
+  if (form.data.fillingMechanisms) {
+    query.query('join', 'filling_mechanisms_fountain_pens', 'fountain_pens.id', 'fountain_pen_id').where('filling_mechanism_id', 'in', form.data.fillingMechanisms.split(','));
+  }
+
+  let products = (await query.fetch({
+    withRelated: [
+      'brand',
+      'capType',
+      'variants',
+      'properties',
+      'fillingMechanisms',
+      'saleStatus'
+    ]
+  })).toJSON();
+
+  return products;
+}
+
 module.exports = {
   getAllProperties,
   getAllFillingMechanisms,
@@ -332,5 +376,6 @@ module.exports = {
   deleteProduct,
   addVariant,
   updateVariant,
-  deleteVariant
+  deleteVariant,
+  filterProductsBySearchFields
 };
