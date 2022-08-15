@@ -202,20 +202,31 @@ const createSearchForm = (choices) => {
       required: false,
       errorAfterField: true,
     }),
-    stockType: fields.boolean({
-      required: false,
-      // errorAfterField: true,
-      choices: {
-        min: 'Min',
-        max: 'Max'
-      },
-      widget: widgets.multipleRadio(),
-    }),
-    stock: fields.number({
+    min_stock: fields.number({
       required: false,
       errorAfterField: true,
       widget: widgets.number(),
-      validators: [validators.min(0), validators.integer()]
+      validators: [validators.min(0), validators.integer(), function(form, field, callback) {
+        if (field.data > form.data.max_stock) {
+          callback('Min stock must be smaller than Max stock');
+        }
+        else {
+          callback()
+        }
+      }]
+    }),
+    max_stock: fields.number({
+      required: false,
+      errorAfterField: true,
+      widget: widgets.number(),
+      validators: [validators.min(0), validators.integer(), function(form, field, callback) {
+        if (field.data < form.data.min_stock) {
+          callback('Max stock must be greater than Min stock');
+        }
+        else {
+          callback()
+        }
+      }]
     }),
     fillingMechanisms: fields.string({
       required: false,
