@@ -283,6 +283,21 @@ const addVariant = async function (formData) {
   return variant;
 };
 
+const updateVariant = async function (variantId, formData) {
+  // Get variant to be updated
+  const variant = await getVariantById(variantId);
+
+  if (!variant) {
+    return;
+  }
+
+  // Populate variant with new data
+  variant.set(formData);
+  await variant.save();
+
+  return true; // Indicate success
+}
+
 const deleteVariant = async function (variantId) {
   // Check that variant to be deleted exists
   const variant = await getVariantById(variantId);
@@ -296,7 +311,6 @@ const deleteVariant = async function (variantId) {
 }
 
 module.exports = {
-  getAllProducts,
   getAllProperties,
   getAllFillingMechanisms,
   getAllBrands,
@@ -309,12 +323,14 @@ module.exports = {
   getAllNibMaterials,
   getAllProductFormChoices,
   getAllVariantFormChoices,
+  getAllProducts,
   getProductById,
-  getVariantById,
   getVariantsByProductId,
+  getVariantById,
   addProduct,
   updateProduct,
-  addVariant,
   deleteProduct,
+  addVariant,
+  updateVariant,
   deleteVariant
 };
