@@ -1,0 +1,24 @@
+{{#extends 'base'}}
+
+{{#block 'subtitle'}}
+Update Variant
+{{/block}}
+
+{{#block 'content'}}
+
+<h1>Update Variant</h1>
+
+<form method="post">
+  {{{form}}}
+  {{> cloudinaryWidget object=variant}}
+  {{> csrfToken}}
+  <input type="submit" value="Update Variant" class="btn btn-primary my-3">
+</form>
+{{/block}}
+
+{{!-- Javascript Block --}}
+{{#block 'js'}}
+{{> cloudinaryWidgetJs}}
+{{/block}}
+
+{{/extends}}

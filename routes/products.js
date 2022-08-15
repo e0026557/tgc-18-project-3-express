@@ -93,7 +93,6 @@ router.post('/create', async function (req, res) {
   });
 });
 
-// TODO
 router.get('/:product_id/update', async function (req, res) {
   // Get product to be updated
   const product = await dataLayer.getProductById(req.params.product_id);
@@ -246,6 +245,69 @@ router.post('/:product_id/variants/create', async function (req, res) {
       });
     }
   });
+});
+
+router.get('/:product_id/variants/:variant_id/update', async function (req, res) {
+  // Get variant to be updated
+  const variant = await dataLayer.getVariantById(req.params.variant_id);
+
+  // Get choices for variant form
+  const choices = await dataLayer.getAllVariantFormChoices();
+
+  // Create variant form and populate with existing data
+  const variantForm = createVariantForm(choices);
+
+  variantForm.fields.nib_size_id.value = variant.get('nib_size_id');
+  variantForm.fields.nib_shape_id.value = variant.get('nib_shape_id');
+  variantForm.fields.nib_flexibility_id.value = variant.get('nib_flexibility_id');
+  variantForm.fields.nib_material_id.value = variant.get('nib_material_id');
+  variantForm.fields.color_id.value = variant.get('color_id');
+  variantForm.fields.cost.value = variant.get('cost');
+  variantForm.fields.stock.value = variant.get('stock');
+  variantForm.fields.image_url.value = variant.get('image_url');
+  variantForm.fields.thumbnail_url.value = variant.get('thumbnail_url');
+
+  res.render('products/update-variant', {
+    variant: variant.toJSON(),
+    form: variantForm.toHTML(bootstrapField)
+  });
+});
+
+router.post('/:product_id/variants/:variant_id/update', async function (req, res) {
+  // Get variant to be updated
+  const variant = await dataLayer.getVariantById(req.params.variant_id);
+
+  // Get choices for variant form
+  const choices = await dataLayer.getAllVariantFormChoices();
+
+  // Process variant form
+  const variantForm = createVariantForm(choices);
+  variantForm.handle(req, {
+    success: async function (form) {
+      const result = await dataLayer.updateVariant(req.params.variant_id, form.data);
+
+      if (!result) {
+        req.flash('error_messages', 'An error occurred when updating. Please try again');
+      }
+      else {
+        req.flash('success_messages', 'Variant successfully updated');
+      }
+
+      res.redirect(`/products/${req.params.product_id}/variants`);
+    },
+    error: function (form) {
+      res.render('products/update-variant', {
+        variant: variant.toJSON(),
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    empty: function (form) {
+      res.render('products/update-variant', {
+        variant: variant.toJSON(),
+        form: form.toHTML(bootstrapField)
+      });
+    }
+  })
 });
 
 router.post('/:product_id/variants/:variant_id/delete', async function (req, res) {
