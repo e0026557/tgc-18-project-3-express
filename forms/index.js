@@ -14,8 +14,14 @@ const options = {
 const bootstrapField = function (name, object) {
   if (!Array.isArray(object.widget.classes)) { object.widget.classes = []; }
 
-  if (object.widget.classes.indexOf('form-control') === -1) {
-    object.widget.classes.push('form-control');
+  // Additional condition for allowing multiple checkbox and radio
+  if (object.widget.type == 'multipleCheckbox' || object.widget.type == 'multipleRadio') {
+    object.widget.classes.push('form-check-input');
+  }
+  else {
+    if (object.widget.classes.indexOf('form-control') === -1) {
+      object.widget.classes.push('form-control');
+    }
   }
 
   var validationclass = object.value && !object.error ? 'is-valid' : '';
@@ -89,7 +95,10 @@ const createProductForm = (choices, formType = 'create') => {
     }),
     description: fields.string({
       required: true,
-      errorAfterField: true
+      errorAfterField: true,
+      widget: widgets.textarea({
+        rows: 2
+      })
     }),
     image_url: fields.url({
       required: validators.required('Variant image is required'),
@@ -110,7 +119,7 @@ const createProductForm = (choices, formType = 'create') => {
       errorAfterField: true,
       choices: choices.saleStatuses,
       widget: widgets.select()
-    })
+    });
   };
 
   return forms.create(formFields, options);
@@ -178,8 +187,62 @@ const createVariantForm = (choices) => {
   }, options);
 }
 
+// Attributes for search form
+// -> brands, filling mechanisms, cap types, sale statuses
+const createSearchForm = (choices) => {
+  return forms.create({
+    brand_id: fields.string({
+      label: 'Brand',
+      required: false,
+      errorAfterField: true,
+      choices: choices.brands,
+      widget: widgets.select()
+    }),
+    model: fields.string({
+      required: false,
+      errorAfterField: true,
+    }),
+    stockType: fields.boolean({
+      required: false,
+      // errorAfterField: true,
+      choices: {
+        min: 'Min',
+        max: 'Max'
+      },
+      widget: widgets.multipleRadio(),
+    }),
+    stock: fields.number({
+      required: false,
+      errorAfterField: true,
+      widget: widgets.number(),
+      validators: [validators.min(0), validators.integer()]
+    }),
+    fillingMechanisms: fields.string({
+      required: false,
+      errorAfterField: true,
+      choices: choices.fillingMechanisms,
+      widget: widgets.multipleSelect()
+    }),
+    cap_type_id: fields.string({
+      label: 'Cap Type',
+      required: false,
+      errorAfterField: true,
+      choices: choices.capTypes,
+      widget: widgets.select()
+    }),
+    sale_status_id: fields.string({
+      label: 'Sale Status',
+      required: false,
+      errorAfterField: true,
+      choices: choices.saleStatuses,
+      widget: widgets.select()
+    })
+  });
+};
+
 module.exports = {
   bootstrapField,
   createProductForm,
-  createVariantForm
+  createVariantForm,
+  createSearchForm
 }
