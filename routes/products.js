@@ -6,51 +6,145 @@ const dataLayer = require('../dal/products');
 const {
   createProductForm,
   bootstrapField,
-  createVariantForm
+  createVariantForm,
+  createSearchForm
 } = require('../forms');
-// const { FountainPen, Variant } = require('../models');
+
+// *** FUNCTIONS ***
+function formatProductData(products) {
+  return products.map((product) => {
+    return {
+      ...product,
+      // Extract only filling mechanism
+      fillingMechanisms: product.fillingMechanisms.map(
+        (obj) => obj.filling_mechanism
+      ),
+      // Calculate total stock
+      totalStock: product.variants.length ? product.variants
+        .map((obj) => obj.stock)
+        .reduce((prev, curr) => prev + curr) : 0,
+      // Calculate max price
+      maxPrice: product.variants.length ? Math.max(
+        ...product.variants.map((obj) => parseInt(obj.cost))
+      ) : 0,
+      // Calculate min price
+      minPrice: product.variants.length ? Math.min(
+        ...product.variants.map((obj) => parseInt(obj.cost))
+      ) : 0
+    };
+  });
+}
 
 // *** ROUTES ***
 
 // --- Products ---
 
 router.get('/', async function (req, res) {
-  // Fetch all products and convert to JSON format
-  let products = (await dataLayer.getAllProducts()).toJSON();
+  // Get all fields required for search form
+  const brands = await dataLayer.getAllBrands();
+  brands.unshift([0, '--- Any Brand ---']);
 
-  // Format products for displaying in dashboard
-  // Exception may be thrown when there is a product with no variants
-  try {
-    products = products.map((product) => {
-      return {
-        ...product,
-        // Extract only filling mechanism
-        fillingMechanisms: product.fillingMechanisms.map(
-          (obj) => obj.filling_mechanism
-        ),
-        // Calculate total stock
-        totalStock: product.variants.length ? product.variants
-          .map((obj) => obj.stock)
-          .reduce((prev, curr) => prev + curr) : 0,
-        // Calculate max price
-        maxPrice: product.variants.length ? Math.max(
-          ...product.variants.map((obj) => parseInt(obj.cost))
-        ) : 0,
-        // Calculate min price
-        minPrice: product.variants.length ? Math.min(
-          ...product.variants.map((obj) => parseInt(obj.cost))
-        ) : 0
-      };
-    });
-  } catch (error) {
-    console.log(error);
-    products = [];
-  }
+  const fillingMechanisms = await dataLayer.getAllFillingMechanisms();
 
-  // console.log(products);
-  res.render('products/index', {
-    products: products
+  const capTypes = await dataLayer.getAllCapTypes();
+  capTypes.unshift([0, '--- Any Cap Type ---']);
+
+  const saleStatuses = await dataLayer.getAllSaleStatuses();
+  saleStatuses.unshift([0, '--- Any Sale Status ---']);
+
+  const choices = {
+    brands,
+    fillingMechanisms,
+    capTypes,
+    saleStatuses
+  };
+
+  // Create search form
+  const searchForm = createSearchForm(choices);
+
+  searchForm.handle(req, {
+    success: async function (form) {
+      // Get filtered products based on search form data (except stock which is derived field)
+      let products = await dataLayer.filterProductsBySearchFields(form);
+
+      // Format product data
+      products = formatProductData(products);
+
+      // Filter products by total stock (derived value)
+      if (form.data.min_stock) {
+        products = products.filter(product => product.totalStock >= form.data.min_stock);
+      }
+
+      if (form.data.max_stock) {
+        products = products.filter(product => product.totalStock <= form.data.max_stock);
+      }
+
+      res.render('products/index', {
+        products: products,
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    error: async function (form) {
+      // Get all products
+      let products = (await dataLayer.getAllProducts()).toJSON();
+      products = formatProductData(products);
+
+      res.render('products/index', {
+        products: products,
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    empty: async function (form) {
+      // Get all products
+      let products = (await dataLayer.getAllProducts()).toJSON();
+      products = formatProductData(products);
+
+      res.render('products/index', {
+        products: products,
+        form: form.toHTML(bootstrapField)
+      });
+    }
   });
+
+  // OLD CODE (PRIOR TO SEARCH ENGINE)
+  // // Fetch all products and convert to JSON format
+  // let products = (await dataLayer.getAllProducts()).toJSON();
+
+  // // Format products for displaying in dashboard
+  // // Exception may be thrown when there is a product with no variants
+  // try {
+  //   // products = products.map((product) => {
+  //   //   return {
+  //   //     ...product,
+  //   //     // Extract only filling mechanism
+  //   //     fillingMechanisms: product.fillingMechanisms.map(
+  //   //       (obj) => obj.filling_mechanism
+  //   //     ),
+  //   //     // Calculate total stock
+  //   //     totalStock: product.variants.length ? product.variants
+  //   //       .map((obj) => obj.stock)
+  //   //       .reduce((prev, curr) => prev + curr) : 0,
+  //   //     // Calculate max price
+  //   //     maxPrice: product.variants.length ? Math.max(
+  //   //       ...product.variants.map((obj) => parseInt(obj.cost))
+  //   //     ) : 0,
+  //   //     // Calculate min price
+  //   //     minPrice: product.variants.length ? Math.min(
+  //   //       ...product.variants.map((obj) => parseInt(obj.cost))
+  //   //     ) : 0
+  //   //   };
+  //   // });
+  //   products = formatProductData(products);
+  // } catch (error) {
+  //   console.log(error);
+  //   products = [];
+  // }
+
+  // // console.log(products);
+  // res.render('products/index', {
+  //   products: products,
+  //   form: searchForm.toHTML(bootstrapField)
+  // });
 });
 
 router.get('/create', async function (req, res) {
