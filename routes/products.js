@@ -1,11 +1,11 @@
 //  *** DEPENDENCIES ***
 const express = require('express');
-const { createPoolCluster } = require('mysql');
 const router = express.Router();
 
 const dataLayer = require('../dal/products');
 const {
   createProductForm,
+  updateProductForm,
   bootstrapField,
   createVariantForm
 } = require('../forms');
@@ -102,7 +102,7 @@ router.get('/:product_id/update', async function (req, res) {
   const choices = await dataLayer.getAllProductFormChoices();
 
   // Create product form and populate with existing data
-  const productForm = createProductForm(choices);
+  const productForm = updateProductForm(choices);
 
   productForm.fields.brand_id.value = product.get('brand_id');
   productForm.fields.model.value = product.get('model');
@@ -111,6 +111,7 @@ router.get('/:product_id/update', async function (req, res) {
   productForm.fields.weight.value = product.get('weight');
   productForm.fields.cap_type_id.value = product.get('cap_type_id');
   productForm.fields.description.value = product.get('description');
+  productForm.fields.sale_status_id.value = product.get('sale_status_id');
   productForm.fields.image_url.value = product.get('image_url');
   productForm.fields.thumbnail_url.value = product.get('thumbnail_url');
 
@@ -126,6 +127,43 @@ router.get('/:product_id/update', async function (req, res) {
     product: product.toJSON(),
     form: productForm.toHTML(bootstrapField)
   });
+});
+
+router.post('/:product_id/update', async function (req, res) {
+  // Get product to be updated
+  const product = await dataLayer.getProductById(req.params.product_id);
+
+  // Fetch all choices for product form
+  const choices = await dataLayer.getAllProductFormChoices();
+
+  // Process product form
+  const productForm = updateProductForm(choices);
+  productForm.handle(req, {
+    success: async function (form) {
+      const result = await dataLayer.updateProduct(req.params.product_id, form.data);
+
+      if (!result) {
+        req.flash('error_messages', 'An error occurred when updating. Please try again');
+      }
+      else {
+        req.flash('success_messages', 'Product successfully updated');
+      }
+
+      res.redirect('/products');
+    },
+    error: function (form) {
+      res.render('products/update', {
+        product: product.toJSON(),
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    empty: function (form) {
+      res.render('products/update', {
+        product: product.toJSON(),
+        form: form.toHTML(bootstrapField)
+      });
+    }
+  })
 });
 
 router.post('/:product_id/delete', async function (req, res) {
