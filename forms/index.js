@@ -35,8 +35,8 @@ const bootstrapField = function (name, object) {
 
 // Attributes of product
 // -> brands, properties, fillingMechanisms, capTypes, saleStatus (default is active)
-const createProductForm = (choices) => {
-  return forms.create({
+const createProductForm = (choices, formType = 'create') => {
+  const formFields = {
     brand_id: fields.string({
       label: 'Brand',
       required: true,
@@ -100,82 +100,20 @@ const createProductForm = (choices) => {
     thumbnail_url: fields.url({
       widget: widgets.hidden()
     })
-  }, options)
-};
+  };
 
-const updateProductForm = (choices) => {
-  return forms.create({
-    brand_id: fields.string({
-      label: 'Brand',
-      required: true,
-      errorAfterField: true,
-      choices: choices.brands,
-      widget: widgets.select()
-    }),
-    model: fields.string({
-      required: true,
-      errorAfterField: true,
-      validators: [validators.maxlength(100)]
-    }),
-    length: fields.number({
-      label: 'Length (mm)',
-      required: true,
-      errorAfterField: true,
-      validators: [validators.integer(), validators.min(0), validators.max(65535)]
-    }),
-    diameter: fields.number({
-      label: 'Diameter (mm)',
-      required: true,
-      errorAfterField: true,
-      validators: [validators.integer(), validators.min(0), validators.max(65535)]
-    }),
-    weight: fields.number({
-      label: 'Weight (g)',
-      required: true,
-      errorAfterField: true,
-      validators: [validators.integer(), validators.min(0), validators.max(65535)]
-    }),
-    cap_type_id: fields.string({
-      label: 'Cap Type',
-      required: true,
-      errorAfterField: true,
-      choices: choices.capTypes,
-      widget: widgets.select()
-    }),
-    fillingMechanisms: fields.string({
-      label: 'Filling Mechanism(s)',
-      required: true,
-      errorAfterField: true,
-      choices: choices.fillingMechanisms,
-      widget: widgets.multipleSelect()
-    }),
-    properties: fields.string({
-      required: true,
-      errorAfterField: true,
-      choices: choices.properties,
-      widget: widgets.multipleSelect()
-    }),
-    description: fields.string({
-      required: true,
-      errorAfterField: true
-    }),
-    sale_status_id: fields.string({
+  // Add sale status field if updating product
+  if (formType == 'update') {
+    formFields.sale_status_id = fields.string({
       label: 'Sale Status',
       required: true,
       errorAfterField: true,
       choices: choices.saleStatuses,
       widget: widgets.select()
-    }),
-    image_url: fields.url({
-      required: validators.required('Variant image is required'),
-      errorAfterField: true,
-      validators: [validators.url()],
-      widget: widgets.hidden()
-    }),
-    thumbnail_url: fields.url({
-      widget: widgets.hidden()
     })
-  }, options)
+  };
+
+  return forms.create(formFields, options);
 };
 
 // Attributes of variant
@@ -243,6 +181,5 @@ const createVariantForm = (choices) => {
 module.exports = {
   bootstrapField,
   createProductForm,
-  updateProductForm,
   createVariantForm
 }

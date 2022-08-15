@@ -5,7 +5,6 @@ const router = express.Router();
 const dataLayer = require('../dal/products');
 const {
   createProductForm,
-  updateProductForm,
   bootstrapField,
   createVariantForm
 } = require('../forms');
@@ -101,7 +100,7 @@ router.get('/:product_id/update', async function (req, res) {
   const choices = await dataLayer.getAllProductFormChoices();
 
   // Create product form and populate with existing data
-  const productForm = updateProductForm(choices);
+  const productForm = createProductForm(choices, 'update');
 
   productForm.fields.brand_id.value = product.get('brand_id');
   productForm.fields.model.value = product.get('model');
@@ -136,7 +135,7 @@ router.post('/:product_id/update', async function (req, res) {
   const choices = await dataLayer.getAllProductFormChoices();
 
   // Process product form
-  const productForm = updateProductForm(choices);
+  const productForm = createProductForm(choices, 'update');
   productForm.handle(req, {
     success: async function (form) {
       const result = await dataLayer.updateProduct(req.params.product_id, form.data);
