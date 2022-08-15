@@ -119,12 +119,14 @@ const getAllProductFormChoices = async function () {
   const capTypes = await getAllCapTypes();
   const properties = await getAllProperties();
   const fillingMechanisms = await getAllFillingMechanisms();
+  const saleStatuses = await getAllSaleStatuses();
 
   return {
     brands,
     capTypes,
     properties,
-    fillingMechanisms
+    fillingMechanisms,
+    saleStatuses
   };
 };
 
@@ -226,11 +228,40 @@ const addProduct = async function (formData) {
   return product;
 };
 
-const addVariant = async function (formData) {
-  const variant = new Variant(formData);
-  await variant.save();
+const updateProduct = async function (productId, formData) {
+  // Get product by ID
+  const product = await getProductById(productId);
 
-  return variant;
+  // If product does not exist, return
+  if (!product) {
+    return false; // Indicate failure
+  };
+
+  // Separate product data from form data
+  const { fillingMechanisms, properties, ...productData } = formData;
+
+  // Populate product with new data
+  product.set(productData);
+  await product.save();
+
+  // Update m:m relationships
+  let selectedFillingMechanismIds = fillingMechanisms.split(',').map(id => parseInt(id));
+  let currentFillingMechanismIds = await product.related('fillingMechanisms').pluck('id'); // Get id of all filling mechanisms associated with the product
+
+  let fillingMechanismIdsToRemove = currentFillingMechanismIds.filter(id => !selectedFillingMechanismIds.includes(id)); // Get id of filling mechanisms that were no longer selected
+  await product.fillingMechanisms().detach(fillingMechanismIdsToRemove);
+
+  await product.fillingMechanisms().attach(selectedFillingMechanismIds);
+
+  let selectedPropertyIds = properties.split(',').map(id => parseInt(id));
+  let currentPropertyIds = await product.related('properties').pluck('id'); // Get id of all properties associated with the product
+
+  let propertyIdsToRemove = currentPropertyIds.filter(id => !selectedPropertyIds.includes(id)); // Get id of all properties that are no longer selected
+  await product.properties().detach(propertyIdsToRemove);
+
+  await product.properties().attach(selectedPropertyIds);
+
+  return true; // Indicate success
 };
 
 const deleteProduct = async function (productId) {
@@ -243,6 +274,13 @@ const deleteProduct = async function (productId) {
 
   await product.destroy();
   return true; // Indicate success
+};
+
+const addVariant = async function (formData) {
+  const variant = new Variant(formData);
+  await variant.save();
+
+  return variant;
 };
 
 const deleteVariant = async function (variantId) {
@@ -275,6 +313,7 @@ module.exports = {
   getVariantById,
   getVariantsByProductId,
   addProduct,
+  updateProduct,
   addVariant,
   deleteProduct,
   deleteVariant
