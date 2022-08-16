@@ -206,7 +206,7 @@ const createSearchForm = (choices) => {
       required: false,
       errorAfterField: true,
       widget: widgets.number(),
-      validators: [validators.min(0), validators.integer(), function(form, field, callback) {
+      validators: [validators.min(0), validators.integer(), function (form, field, callback) {
         if (field.data > form.data.max_stock) {
           callback('Min stock must be smaller than Max stock');
         }
@@ -219,7 +219,7 @@ const createSearchForm = (choices) => {
       required: false,
       errorAfterField: true,
       widget: widgets.number(),
-      validators: [validators.min(0), validators.integer(), function(form, field, callback) {
+      validators: [validators.min(0), validators.integer(), function (form, field, callback) {
         if (field.data < form.data.min_stock) {
           callback('Max stock must be greater than Min stock');
         }
@@ -248,7 +248,7 @@ const createSearchForm = (choices) => {
       choices: choices.saleStatuses,
       widget: widgets.select()
     })
-  });
+  }, options);
 };
 
 module.exports = {
