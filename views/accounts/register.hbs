@@ -1,0 +1,20 @@
+{{#extends 'base'}}
+
+{{#block 'subtitle'}}
+Register
+{{/block}}
+
+{{#block 'content'}}
+
+<h1>Register</h1>
+
+<form method="post">
+
+  {{{form}}}
+  {{> csrfToken}}
+  <input type="submit" value="Register" class="btn btn-primary my-3">
+</form>
+
+{{/block}}
+
+{{/extends}}
