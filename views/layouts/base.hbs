@@ -27,6 +27,7 @@
       </button>
       <div class='collapse navbar-collapse' id='navbarSupportedContent'>
         {{! Navbar (Logged in) }}
+        {{#if user}}
         <ul class='navbar-nav w-100 mb-2 mb-lg-0'>
           <li class='nav-item'>
             <a class='nav-link' href='/products'>Products</a>
@@ -45,28 +46,39 @@
             </ul>
           </li>
 
-          {{! User section }}
+          {{!-- User section (Mobile) --}}
+          <hr class="d-lg-none" />
+          <li class='nav-item d-lg-none'>
+            <a class='nav-link' href='/accounts/view'>My Account</a>
+          </li>
+          <li class='nav-item d-lg-none'>
+            <a class='nav-link' href='/accounts/logout'>Logout</a>
+          </li>
+
+          {{! User section (Desktop) }}
           <li class='nav-item dropdown ms-auto d-none d-lg-inline'>
             <a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' role='button' data-bs-toggle='dropdown'
               aria-expanded='false'>
-              Hi, Admin
+              Hi, {{user.username}}
             </a>
             <ul class='dropdown-menu dropdown-menu-end' aria-labelledby='navbarDropdown'>
               <li><a class='dropdown-item' href='/accounts/view'>My Account</a></li>
               <li><a class='dropdown-item' href='/accounts/logout'>Logout</a></li>
             </ul>
           </li>
+          {{else}}
+          {{! Navbar (Logged out) }}
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/accounts/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/accounts/register">Register</a>
+            </li>
+          </ul>
+          {{/if}}
         </ul>
 
-        {{! Navbar (Logged out) }}
-        {{! <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/accounts/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/accounts/register">Register</a>
-          </li>
-        </ul> }}
       </div>
     </div>
   </nav>
