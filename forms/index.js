@@ -290,42 +290,58 @@ const createSearchForm = (choices) => {
 };
 
 const createRegistrationForm = () => {
+	return forms.create(
+		{
+			name: fields.string({
+				required: true,
+				errorAfterField: true,
+				validators: [validators.maxlength(100)]
+			}),
+			username: fields.string({
+				required: true,
+				errorAfterField: true,
+				validators: [validators.maxlength(100)]
+			}),
+			email: fields.email({
+				required: true,
+				errorAfterField: true,
+				widget: widgets.email(),
+				validators: [validators.maxlength(320)]
+			}),
+			password: fields.password({
+				required: true,
+				errorAfterField: true,
+				validators: [validators.maxlength(100)]
+			}),
+			confirm_password: fields.password({
+				label: 'Re-enter password',
+				required: validators.required('Please re-enter password'),
+				errorAfterField: true,
+				validators: [
+					validators.matchField('password'),
+					validators.maxlength(100)
+				]
+			}),
+			contact_number: fields.string({
+				required: true,
+				errorAfterField: true,
+				widget: widgets.tel(),
+				validators: [validators.maxlength(15)]
+			})
+		},
+		options
+	);
+};
+
+const createLoginForm = () => {
 	return forms.create({
-		name: fields.string({
-			required: true,
-			errorAfterField: true,
-			validators: [validators.maxlength(100)]
-		}),
 		username: fields.string({
 			required: true,
-			errorAfterField: true,
-			validators: [validators.maxlength(100)]
-		}),
-		email: fields.email({
-			required: true,
-			errorAfterField: true,
-			widget: widgets.email(),
-			validators: [validators.maxlength(320)]
+			errorAfterField: true
 		}),
 		password: fields.password({
 			required: true,
-			errorAfterField: true,
-			validators: [validators.maxlength(100)]
-		}),
-		confirm_password: fields.password({
-      label: 'Re-enter password',
-			required: validators.required('Please re-enter password'),
-			errorAfterField: true,
-			validators: [
-				validators.matchField('password'),
-				validators.maxlength(100)
-			]
-		}),
-		contact_number: fields.string({
-			required: true,
-			errorAfterField: true,
-			widget: widgets.tel(),
-			validators: [validators.maxlength(15)]
+			errorAfterField: true
 		})
 	}, options);
 };
@@ -335,5 +351,6 @@ module.exports = {
 	createProductForm,
 	createVariantForm,
 	createSearchForm,
-	createRegistrationForm
+	createRegistrationForm,
+	createLoginForm
 };
