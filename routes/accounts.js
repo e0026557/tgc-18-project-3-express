@@ -3,11 +3,14 @@ const express = require('express');
 const router = express.Router();
 
 const dataLayer = require('../dal/accounts');
-const { createRegistrationForm, bootstrapField } = require('../forms');
+const {
+  createRegistrationForm,
+  bootstrapField,
+  createLoginForm
+} = require('../forms');
 
 // *** ROUTES ***
 
-// TODO
 router.get('/register', function (req, res) {
   const registerForm = createRegistrationForm();
 
@@ -29,7 +32,10 @@ router.post('/register', async function (req, res) {
         res.redirect('/accounts/login');
       } catch (error) {
         console.log(error);
-        req.flash('error_messages', 'An error occurred while registering. Please try again');
+        req.flash(
+          'error_messages',
+          'An error occurred while registering. Please try again'
+        );
         res.redirect('/accounts/register');
       }
     },
@@ -43,12 +49,59 @@ router.post('/register', async function (req, res) {
         form: form.toHTML(bootstrapField)
       });
     }
-  })
+  });
 });
 
-// TODO
 router.get('/login', function (req, res) {
-  res.send('login page');
-})
+  const loginForm = createLoginForm();
+
+  res.render('accounts/login', {
+    form: loginForm.toHTML(bootstrapField)
+  });
+});
+
+router.post('/login', async function (req, res) {
+  const loginForm = createLoginForm();
+
+  // Process login form
+  // -> NOTE: Generic error message for security
+  loginForm.handle(req, {
+    success: async function (form) {
+      // Find user by username and password
+      const user = await dataLayer.getUserByCredentials(form.data);
+
+      // If user does not exist
+      if (!user) {
+        req.flash('error_messages', 'Invalid username and/or password');
+        res.redirect('/accounts/login');
+      }
+      else {
+        // Save user to session data
+        req.session.user = {
+          id: user.get('id'),
+          username: user.get('username')
+        };
+
+        req.flash('success_messages', `Welcome back, ${user.get('username')}`);
+
+        // Redirect user to intended path before login
+        const redirectTo = req.session.redirectTo || '/products';
+        req.session.redirectTo = null; // clear redirectTo
+        res.redirect(redirectTo);
+      }
+
+    },
+    error: function (form) {
+      res.render('accounts/login', {
+        form: form.toHTML(bootstrapField)
+      });
+    },
+    empty: function (form) {
+      res.render('accounts/login', {
+        form: form.toHTML(bootstrapField)
+      });
+    }
+  });
+});
 
 module.exports = router;
