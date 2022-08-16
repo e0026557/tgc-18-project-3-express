@@ -1,0 +1,21 @@
+{{#extends 'base'}}
+
+{{#block 'subtitle'}}
+  Login
+{{/block}}
+
+{{#block 'content'}}
+
+  <h1>Login</h1>
+
+  <form method="post">
+    {{{form}}}
+    {{> csrfToken}}
+
+    <input type="submit" value="Login" class="btn btn-primary my-3">
+    
+  </form>
+
+{{/block}}
+
+{{/extends}}
