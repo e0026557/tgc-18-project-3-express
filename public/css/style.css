@@ -15,6 +15,8 @@
 - #b68d40 (tan)
 
 - #d6ad60 (gold)
+-- Tints:
+- #debd80
 
 */
 
@@ -26,6 +28,8 @@
 
 body {
   font-family: 'Work Sans', sans-serif;
+  background-color: #f4ebd0;
+  color: #122620;
 }
 
 .logo {
