@@ -32,6 +32,8 @@ wax.setLayoutPath('./views/layouts');
 const PORT = process.env.PORT || 3000;
 
 // *** GLOBAL MIDDLEWARES ***
+const { checkIfAuthenticated } = require('./middlewares');
+
 // Enable cross-site origin resource sharing
 app.use(cors());
 
@@ -62,7 +64,6 @@ app.use(function (req, res, next) {
 //  Enable CSRF protection
 const csrfInstance = csrf();
 app.use(function (req, res, next) {
-  // console.log('Checking for csrf exclusion');
   if (req.url === '/checkout/process_payment' || req.url.slice(0, 5) == '/api/') {
     next();
   }
@@ -103,10 +104,10 @@ const userRoutes = require('./routes/users');
 const cloudinaryRoutes = require('./routes/cloudinary');
 
 app.use('/', landingRoutes);
-app.use('/products', productRoutes);
-app.use('/orders', orderRoutes);
+app.use('/products', checkIfAuthenticated, productRoutes);
+app.use('/orders', checkIfAuthenticated, orderRoutes);
 app.use('/accounts', accountRoutes);
-app.use('/users', userRoutes);
+app.use('/users', checkIfAuthenticated, userRoutes);
 app.use('/cloudinary', cloudinaryRoutes);
 
 

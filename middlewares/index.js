@@ -4,10 +4,10 @@ const checkIfAuthenticated = function (req, res, next) {
 	} else {
 		// Store user's intended path before login
 		// req.originalUrl is the endpoint
-		req.session.redirectTo = req.originalUrl || '/';
+		req.session.redirectTo = req.originalUrl || '/products';
 
 		req.flash('error_messages', 'You need to log in to access this page');
-		res.redirect('/users/login');
+		res.redirect('/accounts/login');
 	}
 };
 
