@@ -25,7 +25,10 @@ const getUserByCredentials = async function (formData) {
     username: formData.username,
     password: getHash(formData.password)
   }).fetch({
-    require: false
+    require: false,
+    withRelated: [
+      'role'
+    ]
   });
 
   return user ? user : false; // Return user if exists, else false
