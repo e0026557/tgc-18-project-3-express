@@ -31,3 +31,35 @@ body {
 .logo {
   font-family: 'Eagle Lake', cursive;
 }
+
+main {
+  height: calc(100vh - 56px);
+  overflow-y: scroll;
+}
+
+/* *** SMALL SCREEN SETTINGS *** */
+/* --- NAVBAR --- */
+.navbar {
+  background-color: #122620 !important;
+}
+
+.navbar-toggler {
+  border-color: #d6ad60 !important;
+  color: #d6ad60 !important;
+}
+
+.navbar-brand.logo,
+.nav-link {
+  color: #d6ad60 !important;
+}
+
+.nav-link:hover,
+.nav-link:active {
+  color: #debd80 !important;
+}
+
+/* *** MEDIUM SCREEN SETTINGS (768PX AND ABOVE) *** */
+@media screen and (min-width: 768px) {}
+
+/* *** LARGE SCREEN SETTINGS (992PX AND ABOVE) *** */
+@media screen and (min-width: 992px) {}
