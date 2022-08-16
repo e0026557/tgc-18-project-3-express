@@ -106,4 +106,11 @@ router.post('/login', async function (req, res) {
   });
 });
 
+router.get('/logout', function (req, res) {
+  req.session.user = null;
+  req.flash('success_messages', 'Successfully logged out');
+
+  res.redirect('/accounts/login');
+})
+
 module.exports = router;
