@@ -77,6 +77,13 @@ router.post('/login', async function (req, res) {
         res.redirect('/accounts/login');
       }
       else {
+        // Check that user is either an admin or staff (role id is 2 or 3)
+        if (user.get('role_id') == 1) {
+          req.flash('error_messages', 'Invalid username and/or password');
+          res.redirect('/accounts/login');
+          return;
+        }
+
         // Save user to session data
         req.session.user = {
           id: user.get('id'),
