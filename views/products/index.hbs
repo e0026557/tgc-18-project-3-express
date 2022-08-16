@@ -8,7 +8,7 @@ Products
 
 <h1 class="mt-3">All Products</h1>
 
-<div class="accordion mt-5 mb-4">
+<div class="accordion mt-5 mb-4 d-lg-none">
   <div class="accordion-item">
     <h2 class="accordion-header" id="search-toggle">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-panel"
@@ -32,77 +32,93 @@ Products
   <a href="/products/create" class="btn btn-primary">Add Product</a>
 </div>
 
-<table class='table table-striped table-responsive'>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Image</th>
-      <th>Product</th>
-      <th>Filling Mechanism(s)</th>
-      <th>Cap Type</th>
-      <th>Properties</th>
-      <th>Variant(s)</th>
-      <th>Specifications</th>
-      <th>Total Stock</th>
-      <th>Price Range</th>
-      <th>Sale Status</th>
-      <th></th>
-    </tr>
-  </thead>
 
-  <tbody>
-    {{#each products}}
-    <tr>
-      <td>{{this.id}}</td>
-      <td>
-        <img src='{{this.thumbnail_url}}' alt='Thumbnail image of fountain pen' />
-      </td>
-      <td>{{this.brand.brand}} {{this.model}}</td>
-      <td>
-        {{join this.fillingMechanisms ', '}}
-      </td>
-      <td>
-        {{this.capType.cap_type}}
-      </td>
-      <td>
-        {{#each this.properties}}
-        <span class='badge rounded-pill bg-primary'>{{this.property}}</span>
+<div class="container-fluid row bg-light px-3 py-3 rounded">
+  <div class="d-none d-lg-block col-lg-3 bg-light">
+    <form method="get">
+      <h5>Search Products</h5>
+      {{{form}}}
+      <a href="/products" class="btn btn-secondary mx-1">Reset</a>
+      <input type="submit" value="Search" class="btn btn-primary my-3">
+    </form>
+  </div>
+  <div class="col-12 col-lg-9 overflow-scroll">
+    <table class='table table-striped table-light table-responsive'>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Filling Mechanism(s)</th>
+          <th>Cap Type</th>
+          <th>Properties</th>
+          <th>Variant(s)</th>
+          <th>Specifications</th>
+          <th>Total Stock</th>
+          <th>Price Range</th>
+          <th>Sale Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>
+            <img src='{{this.thumbnail_url}}' alt='Thumbnail image of fountain pen' />
+          </td>
+          <td>{{this.brand.brand}} {{this.model}}</td>
+          <td>
+            {{join this.fillingMechanisms ', '}}
+          </td>
+          <td>
+            {{this.capType.cap_type}}
+          </td>
+          <td>
+            {{#each this.properties}}
+            <span class='badge rounded-pill bg-primary'>{{this.property}}</span>
+            {{/each}}
+          </td>
+          <td>{{length this.variants}}</td>
+          <td>
+            Weight:
+            {{this.weight}}
+            g
+            <br />
+            Diameter:
+            {{this.diameter}}
+            mm
+            <br />
+            Length:
+            {{this.length}}
+            mm
+            <br />
+          </td>
+          <td>{{this.totalStock}}</td>
+          <td>
+            {{#if this.maxPrice}}
+            ${{divide this.minPrice 100}} ~ ${{divide this.maxPrice 100}}
+            {{else}}
+            N/A
+            {{/if}}
+          </td>
+          <td>{{this.saleStatus.sale_status}}</td>
+          <td>
+            <a href='/products/{{this.id}}/variants' class='btn btn-primary btn-sm'>Variants</a> <br />
+            <a href='/products/{{this.id}}/update' class='btn btn-sm btn-secondary'>Edit</a>
+            <a href='/products/{{this.id}}/delete' data-product-id="{{this.id}}"
+              data-name="{{this.brand.brand}} {{this.model}}" class='btn btn-sm btn-danger btn-delete'>Delete</a>
+          </td>
+        </tr>
         {{/each}}
-      </td>
-      <td>{{length this.variants}}</td>
-      <td>
-        Weight:
-        {{this.weight}}
-        g
-        <br />
-        Diameter:
-        {{this.diameter}}
-        mm
-        <br />
-        Length:
-        {{this.length}}
-        mm
-        <br />
-      </td>
-      <td>{{this.totalStock}}</td>
-      <td>
-        {{#if this.maxPrice}}
-        ${{divide this.minPrice 100}} ~ ${{divide this.maxPrice 100}}
-        {{else}}
-        N/A
-        {{/if}}
-      </td>
-      <td>{{this.saleStatus.sale_status}}</td>
-      <td>
-        <a href='/products/{{this.id}}/variants' class='btn btn-primary btn-sm'>Variants</a> <br />
-        <a href='/products/{{this.id}}/update' class='btn btn-sm btn-secondary'>Edit</a>
-        <a href='/products/{{this.id}}/delete' data-product-id="{{this.id}}"
-          data-name="{{this.brand.brand}} {{this.model}}" class='btn btn-sm btn-danger btn-delete'>Delete</a>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
 
 {{/block}}
 
