@@ -106,7 +106,7 @@ app.use('/', landingRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/accounts', accountRoutes);
-app.use('/users', accountRoutes);
+app.use('/users', userRoutes);
 app.use('/cloudinary', cloudinaryRoutes);
 
 
