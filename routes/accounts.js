@@ -69,7 +69,6 @@ router.post('/login', async function (req, res) {
     success: async function (form) {
       // Find user by username and password
       const user = await dataLayer.getUserByCredentials(form.data);
-      console.log('user data => ', user.toJSON())
 
       // If user does not exist
       if (!user) {
