@@ -3,15 +3,12 @@ const { User } = require('../models');
 const { getHash } = require('../utilities');
 
 // *** FUNCTIONS ***
-const addUser = async function (formData) {
-  // Extract user data from register form data
-  const { confirm_password, ...userData } = formData;
-
+const addUser = async function (userData, roleId=1) {
   // Hash user's password
   userData.password = getHash(userData.password);
 
   // Set user role to staff
-  userData.role_id = 2;
+  userData.role_id = roleId;
 
   // Create new User instance with user data
   const user = new User(userData);

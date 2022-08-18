@@ -25,9 +25,12 @@ router.post('/register', async function (req, res) {
   // Process registration form
   registerForm.handle(req, {
     success: async function (form) {
+      // Extract user data from form data
+      const { confirm_password, ...userData } = form.data;
+
       // Create new user
       try {
-        const user = await dataLayer.addUser(form.data);
+        const user = await dataLayer.addUser(userData, 2);
         req.flash('success_messages', 'Registered successfully');
         res.redirect('/accounts/login');
       } catch (error) {
