@@ -181,7 +181,11 @@ const OrderItem = bookshelf.model('OrderItem', {
   variant: function () {
     return this.belongsTo('Variant');
   }
-})
+});
+
+const BlacklistedToken = bookshelf.model('BlacklistedToken', {
+  tableName: 'blacklisted_tokens'
+});
 
 module.exports = {
   Brand,
@@ -201,5 +205,6 @@ module.exports = {
   User,
   CartItem,
   Order,
-  OrderItem
+  OrderItem,
+  BlacklistedToken
 };
