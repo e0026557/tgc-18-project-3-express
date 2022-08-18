@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { checkIfAuthenticatedJWT } = require('../../middlewares');
 const dataLayer = require('../../dal/accounts');
 const {
-	getHash,
 	sendResponse,
 	sendDatabaseError,
 	validateEmail
@@ -137,14 +136,15 @@ router.get('/profile', checkIfAuthenticatedJWT, function (req, res) {
 	res.json(user);
 });
 
-// TODO
 router.post('/refresh', async function (req, res) {
 	// Get the refreshToken from req.body (need not be in authorisation header for refresh tokens)
 	const refreshToken = req.body.refreshToken;
 
 	if (refreshToken) {
 		// Check if the token is already blacklisted
-		const blacklistedToken = await dataLayer.getBlacklistedToken(refreshToken);
+		const blacklistedToken = await dataLayer.getBlacklistedToken(
+			refreshToken
+		);
 
 		// If the blacklistedToken is NOT null, then it means it exists and was blacklisted
 		if (blacklistedToken) {
@@ -182,6 +182,29 @@ router.post('/refresh', async function (req, res) {
 		);
 	} else {
 		// If no refresh token
+		sendResponse(res, 400, {
+			error: 'No refresh token found'
+		});
+	}
+});
+
+router.post('/logout', async function (req, res) {
+	const refreshToken = req.body.refreshToken;
+	if (refreshToken) {
+		jwt.verify(
+			refreshToken,
+			process.env.REFRESH_TOKEN_SECRET,
+			async function (err, tokenData) {
+				// Add refresh token to the black list
+				if (!err) {
+					await dataLayer.addBlacklistedToken(refreshToken);
+					sendResponse(res, 200, {
+						message: 'Successfully logged out'
+					});
+				}
+			}
+		);
+	} else {
 		sendResponse(res, 400, {
 			error: 'No refresh token found'
 		});
