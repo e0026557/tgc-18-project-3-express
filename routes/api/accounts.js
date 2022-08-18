@@ -131,10 +131,61 @@ router.post('/login', async function (req, res) {
 	});
 });
 
-// TODO (FOR TESTING PURPOSES)
+// (FOR TESTING PURPOSES)
 router.get('/profile', checkIfAuthenticatedJWT, function (req, res) {
 	const user = req.user;
 	res.json(user);
+});
+
+// TODO
+router.post('/refresh', async function (req, res) {
+	// Get the refreshToken from req.body (need not be in authorisation header for refresh tokens)
+	const refreshToken = req.body.refreshToken;
+
+	if (refreshToken) {
+		// Check if the token is already blacklisted
+		const blacklistedToken = await dataLayer.getBlacklistedToken(refreshToken);
+
+		// If the blacklistedToken is NOT null, then it means it exists and was blacklisted
+		if (blacklistedToken) {
+			sendResponse(res, 400, {
+				error: 'Refresh token has been blacklisted'
+			});
+			return;
+		}
+
+		// Verify refresh token
+		jwt.verify(
+			refreshToken,
+			process.env.REFRESH_TOKEN_SECRET,
+			function (err, tokenData) {
+				// If verified
+				if (!err) {
+					// Generate new access token (JWT)
+					const accessToken = generateAccessToken(
+						tokenData.username,
+						tokenData.id,
+						tokenData.role_id,
+						process.env.TOKEN_SECRET,
+						'1h'
+					);
+
+					sendResponse(res, 200, {
+						accessToken: accessToken
+					});
+				} else {
+					sendResponse(res, 400, {
+						error: 'Invalid refresh token'
+					});
+				}
+			}
+		);
+	} else {
+		// If no refresh token
+		sendResponse(res, 400, {
+			error: 'No refresh token found'
+		});
+	}
 });
 
 module.exports = router;
