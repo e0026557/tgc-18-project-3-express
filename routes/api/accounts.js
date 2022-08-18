@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { checkIfAuthenticatedJWT } = require('../../middlewares');
 const dataLayer = require('../../dal/accounts');
 const {
 	getHash,
@@ -128,6 +129,12 @@ router.post('/login', async function (req, res) {
 		accessToken: accessToken,
 		refreshToken: refreshToken
 	});
+});
+
+// TODO (FOR TESTING PURPOSES)
+router.get('/profile', checkIfAuthenticatedJWT, function (req, res) {
+	const user = req.user;
+	res.json(user);
 });
 
 module.exports = router;
