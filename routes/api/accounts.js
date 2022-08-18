@@ -89,7 +89,45 @@ router.post('/register', async function (req, res) {
 	}
 });
 
-// TODO
-router.post('/login', async function (req, res) {});
+router.post('/login', async function (req, res) {
+	// Get user by username and password
+	const userData = {
+		username: req.body.username,
+		password: req.body.password
+	};
+
+	const user = await dataLayer.getUserByCredentials(userData);
+
+	// If user does not exist or user is not a customer (role_id != 1)
+	if (!user || user.get('role_id') != 1) {
+		sendResponse(res, 400, {
+			error: 'Invalid username and/or password'
+		});
+		return;
+	}
+
+	// If user exists and is a customer, create JWT and refresh token
+	const accessToken = generateAccessToken(
+		user.get('username'),
+		user.get('id'),
+		user.get('role_id'),
+		process.env.TOKEN_SECRET,
+		'1h'
+	);
+
+	const refreshToken = generateAccessToken(
+		user.get('username'),
+		user.get('id'),
+		user.get('role_id'),
+		process.env.REFRESH_TOKEN_SECRET,
+		'7d'
+	);
+
+	// Send back response containing JWT and refresh token
+	sendResponse(res, 200, {
+		accessToken: accessToken,
+		refreshToken: refreshToken
+	});
+});
 
 module.exports = router;
