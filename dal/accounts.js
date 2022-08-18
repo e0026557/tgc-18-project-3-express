@@ -1,9 +1,9 @@
 // *** DEPENDENCIES ***
-const { User } = require('../models');
+const { User, BlacklistedToken } = require('../models');
 const { getHash } = require('../utilities');
 
 // *** FUNCTIONS ***
-const addUser = async function (userData, roleId=1) {
+const addUser = async function (userData, roleId = 1) {
   // Hash user's password
   userData.password = getHash(userData.password);
 
@@ -31,7 +31,18 @@ const getUserByCredentials = async function (formData) {
   return user ? user : false; // Return user if exists, else false
 }
 
+const getBlacklistedToken = async function (refreshToken) {
+  const blacklistedToken = await BlacklistedToken.where({
+    token: refreshToken
+  }).fetch({
+    require: false
+  });
+
+  return blacklistedToken;
+}
+
 module.exports = {
   addUser,
-  getUserByCredentials
+  getUserByCredentials,
+  getBlacklistedToken
 };
