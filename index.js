@@ -72,6 +72,19 @@ app.use(function (req, res, next) {
   }
 });
 
+// Handle CSRF error
+app.use(function (err, req, res, next) {
+  if (err && err.code === 'EBADCSRFTOKEN') {
+    // Add flash message
+    req.flash('error_messages', 'The form has expired. Please try again');
+
+    res.redirect('back');
+  }
+  else {
+    next();
+  }
+})
+
 // Share CSRF with hbs files (must be included for all forms otherwise invalid CSRF error)
 app.use(function (req, res, next) {
   // Check if req.csrfToken is available
