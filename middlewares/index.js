@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { sendResponse } = require("../utilities");
+const { sendResponse } = require('../utilities');
 
 const checkIfAuthenticated = function (req, res, next) {
 	if (req.session.user) {
@@ -28,22 +28,20 @@ const checkIfAuthenticatedJWT = function (req, res, next) {
 				sendResponse(res, 401, {
 					error: 'Invalid access token'
 				});
-			}
-			else {
+				return;
+			} else {
 				// If token is valid
 				req.user = tokenData; // so that the route can use this data
 				next();
 			}
-		})
-		next();
-	}
-	else {
+		});
+	} else {
 		sendResponse(res, 401, {
 			error: 'No authorization headers found'
 		});
+		return;
 	}
-
-}
+};
 
 module.exports = {
 	checkIfAuthenticated,
