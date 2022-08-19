@@ -32,7 +32,7 @@ wax.setLayoutPath('./views/layouts');
 const PORT = process.env.PORT || 3000;
 
 // *** GLOBAL MIDDLEWARES ***
-const { checkIfAuthenticated } = require('./middlewares');
+const { checkIfAuthenticated, checkIfAuthenticatedJWT } = require('./middlewares');
 
 // Enable cross-site origin resource sharing
 app.use(cors());
@@ -130,7 +130,7 @@ app.use('/cloudinary', cloudinaryRoutes);
 
 // API routes
 app.use('/api/accounts', express.json(), api.accounts);
-app.use('/api/cart', express.json(), api.cart);
+app.use('/api/cart', express.json(), checkIfAuthenticatedJWT, api.cart);
 
 // *** SERVER ***
 app.listen(PORT, function () {
