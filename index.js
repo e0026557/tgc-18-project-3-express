@@ -119,6 +119,7 @@ const cloudinaryRoutes = require('./routes/cloudinary');
 const api = {
   accounts: require('./routes/api/accounts'),
   cart: require('./routes/api/cart'),
+  checkout: require('./routes/api/checkout')
 };
 
 app.use('/', landingRoutes);
@@ -131,6 +132,7 @@ app.use('/cloudinary', cloudinaryRoutes);
 // API routes
 app.use('/api/accounts', express.json(), api.accounts);
 app.use('/api/cart', express.json(), checkIfAuthenticatedJWT, api.cart);
+app.use('/api/checkout', express.json(), checkIfAuthenticatedJWT, api.checkout);
 
 // *** SERVER ***
 app.listen(PORT, function () {
