@@ -43,9 +43,7 @@ router.post('/:variant_id/add', async function (req, res) {
         message: 'Item successfully added to cart'
       });
     } else {
-      sendResponse(res, 400, {
-        message: 'An error occurred while adding to cart'
-      });
+      sendDatabaseError(res);
     }
   } catch (error) {
     console.log(error);
@@ -53,7 +51,32 @@ router.post('/:variant_id/add', async function (req, res) {
   }
 });
 
-// TODO: REMOVE FROM CART
+router.delete('/:variant_id/delete', async function (req, res) {
+  const userId = req.user.id;
+  const variantId = req.params.variant_id;
+
+  if (!userId || !variantId) {
+    sendResponse(res, 400, {
+      error: 'Invalid parameter(s) specified'
+    });
+  }
+
+  // Delete variant from user's cart
+  try {
+    const result = await cartServices.deleteCartItem(userId, variantId);
+    if (result) {
+      sendResponse(res, 200, {
+        message: 'Variant successfully removed from cart'
+      });
+    }
+    else {
+      sendDatabaseError(res);
+    }
+  } catch (error) {
+    console.log(error);
+    sendDatabaseError(res);
+  }
+});
 
 // TODO: UPDATE CART
 
