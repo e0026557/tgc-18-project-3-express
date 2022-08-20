@@ -44,7 +44,9 @@ router.post('/:variant_id/add', async function (req, res) {
         message: 'Item successfully added to cart'
       });
     } else {
-      sendDatabaseError(res);
+      sendResponse(res, 400, {
+        error: 'An error occurred while adding to cart'
+      });
     }
   } catch (error) {
     console.log(error);
@@ -73,7 +75,9 @@ router.put('/:variant_id/update', async function (req, res) {
       });
     }
     else {
-      sendDatabaseError(res);
+      sendResponse(res, 400, {
+        error: 'An error occurred while updating'
+      });
     }
   } catch (error) {
     console.log(error);
