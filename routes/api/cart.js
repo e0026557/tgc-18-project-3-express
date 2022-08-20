@@ -29,6 +29,7 @@ router.post('/:variant_id/add', async function (req, res) {
     sendResponse(res, 400, {
       error: 'Invalid parameter(s) specified'
     });
+    return;
   }
 
   // Add variant to user's cart
@@ -43,6 +44,35 @@ router.post('/:variant_id/add', async function (req, res) {
         message: 'Item successfully added to cart'
       });
     } else {
+      sendDatabaseError(res);
+    }
+  } catch (error) {
+    console.log(error);
+    sendDatabaseError(res);
+  }
+});
+
+router.put('/:variant_id/update', async function (req, res) {
+  const userId = req.user.id;
+  const variantId = req.params.variant_id;
+  const quantity = req.body.quantity;
+
+  if (!userId || !variantId || !quantity) {
+    sendResponse(res, 400, {
+      error: 'Invalid parameter(s) specified'
+    });
+    return;
+  }
+
+  // Update quantity of cart item
+  try {
+    const result = await cartServices.updateCartItem(userId, variantId, quantity);
+    if (result) {
+      sendResponse(res, 200, {
+        message: 'Cart item succesfully updated'
+      });
+    }
+    else {
       sendDatabaseError(res);
     }
   } catch (error) {
@@ -77,7 +107,5 @@ router.delete('/:variant_id/delete', async function (req, res) {
     sendDatabaseError(res);
   }
 });
-
-// TODO: UPDATE CART
 
 module.exports = router;
