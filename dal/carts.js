@@ -61,7 +61,7 @@ const updateCartItem = async function (userId, variantId, quantity) {
 		// Update quantity of cart item
 		cartItem.set('quantity', quantity);
 		await cartItem.save();
-		return cartItem;
+		return true;
 	} else {
 		return false; // Indicate failure
 	}
