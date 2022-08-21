@@ -119,7 +119,9 @@ const cloudinaryRoutes = require('./routes/cloudinary');
 const api = {
   accounts: require('./routes/api/accounts'),
   cart: require('./routes/api/cart'),
-  checkout: require('./routes/api/checkout')
+  checkout: require('./routes/api/checkout'),
+  stripe: require('./routes/api/stripe'),
+  test_checkout: require('./routes/api/test_checkout'),
 };
 
 app.use('/', landingRoutes);
@@ -133,6 +135,9 @@ app.use('/cloudinary', cloudinaryRoutes);
 app.use('/api/accounts', express.json(), api.accounts);
 app.use('/api/cart', express.json(), checkIfAuthenticatedJWT, api.cart);
 app.use('/api/checkout', express.json(), checkIfAuthenticatedJWT, api.checkout);
+app.use('/api/stripe', api.stripe);
+
+app.use('/api/test_checkout', api.test_checkout);
 
 // *** SERVER ***
 app.listen(PORT, function () {
