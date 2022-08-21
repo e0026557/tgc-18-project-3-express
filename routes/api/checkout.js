@@ -36,7 +36,7 @@ router.get('/', async function (req, res) {
 			name: lineItemName,
 			amount: cartItem.variant.cost,
 			quantity: cartItem.quantity,
-			images: [cartItem.variant.thumbnail_url],
+			images: [cartItem.variant.thumbnail_url], // Note: Images must be in an array
 			currency: 'SGD'
 		};
 
