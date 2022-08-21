@@ -12,7 +12,7 @@ router.get('/', async function (req, res) {
 	const userId = req.user.id;
 	const cartItems = (await cartServices.getCart(userId)).toJSON();
 
-	// TODO: CREATE LINE ITEM
+	// Create line items
 	let lineItems = [];
 	let meta = [];
 	for (let cartItem of cartItems) {
@@ -50,7 +50,7 @@ router.get('/', async function (req, res) {
 		});
 	}
 
-	// TODO: CREATE STRIPE PAYMENT SESSIONS
+	// Create Stripe payment session
 	let metaData = JSON.stringify(meta);
 	const payment = {
 		payment_method_types: ['card', 'grabpay', 'paynow'],
@@ -110,7 +110,7 @@ router.get('/', async function (req, res) {
 		mode: 'payment'
 	};
 
-	// TODO: REGISTER STRIPE PAYMENT SESSIONS
+	// Register Stripe payment session
 	let stripeSession = await Stripe.checkout.sessions.create(payment);
 	sendResponse(res, 200, {
 		sessionId: stripeSession.id,
