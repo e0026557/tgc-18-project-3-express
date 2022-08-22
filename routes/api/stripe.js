@@ -106,10 +106,18 @@ router.post(
 				console.log(orderId);
 
 				// Create order items using order ID
+				for (let lineItem of metadata) {
+					const orderItemData = {
+						order_id: orderId,
+						quantity: lineItem.quantity,
+						variant_id: lineItem.variant_id
+					};
 
+					const orderItem = await dataLayer.addOrderItem(orderItemData);
+				}
 
-				sendResponse(res, 200, {
-					message: 'Checkout success'
+				sendResponse(res, 201, {
+					message: 'Order and order items successfully created'
 				});
 			}
 		} catch (error) {
