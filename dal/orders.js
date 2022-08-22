@@ -18,6 +18,19 @@ const addOrderItem = async function (orderItemData) {
   return orderItem;
 }
 
+const getAllOrders = async function () {
+  const orders = await Order.collection().fetch({
+    require: false,
+    withRelated: [
+      'user',
+      'orderStatus',
+      'orderItems'
+    ]
+  });
+
+  return orders;
+}
+
 // TODO: SEARCH ORDERS BY 
 // ANY 4:
 // PRODUCT NAME, DATA, MIN/MAX COST, STATUS, CUSTOMER EMAIL, CUSTOMER NAME
@@ -30,5 +43,6 @@ const addOrderItem = async function (orderItemData) {
 
 module.exports = {
   addOrder,
-  addOrderItem
+  addOrderItem,
+  getAllOrders
 };
