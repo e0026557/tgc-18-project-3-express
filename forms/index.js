@@ -346,11 +346,36 @@ const createLoginForm = () => {
 	}, options);
 };
 
+const createOrderSearchForm = (choices) => {
+	return forms.create({
+		customer_name: fields.string({
+			required: false,
+			errorAfterField: true,
+		}),
+		customer_email: fields.email({
+			required: false,
+			errorAfterField: true,
+		}),
+		order_status: fields.string({
+			required: false,
+			errorAfterField: true,
+			choices: choices.orderStatuses,
+			widget: widgets.select()
+		}),
+		order_date: fields.date({
+			required: false,
+			errorAfterField: true,
+			widget: widgets.date()
+		})
+	}, options);
+};
+
 module.exports = {
 	bootstrapField,
 	createProductForm,
 	createVariantForm,
 	createSearchForm,
 	createRegistrationForm,
-	createLoginForm
+	createLoginForm,
+	createOrderSearchForm
 };
