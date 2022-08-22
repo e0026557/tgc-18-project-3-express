@@ -363,10 +363,37 @@ const createOrderSearchForm = (choices) => {
 			choices: choices.orderStatuses,
 			widget: widgets.select()
 		}),
-		order_date: fields.date({
+		from_order_date: fields.date({
 			required: false,
 			errorAfterField: true,
-			widget: widgets.date()
+			widget: widgets.date(),
+			validators: [
+				function (form, field, callback) {
+					if (field.data.to_order_date && field.data > form.data.to_order_date) {
+						callback(
+							'Please enter a date before "To order date"'
+						);
+					} else {
+						callback();
+					}
+				}
+			]
+		}),
+		to_order_date: fields.date({
+			required: false,
+			errorAfterField: true,
+			widget: widgets.date(),
+			validators: [
+				function (form, field, callback) {
+					if (field.data.from_order_date && field.data < form.data.from_order_date) {
+						callback(
+							'Please enter date after "From order date"'
+						);
+					} else {
+						callback();
+					}
+				}
+			]
 		})
 	}, options);
 };
