@@ -356,7 +356,8 @@ const createOrderSearchForm = (choices) => {
 			required: false,
 			errorAfterField: true,
 		}),
-		order_status: fields.string({
+		order_status_id: fields.string({
+			label: 'Order status',
 			required: false,
 			errorAfterField: true,
 			choices: choices.orderStatuses,
