@@ -11,9 +11,11 @@ const addOrder = async function (orderData) {
   return order;
 }
 
-// TODO: CREATE NEW ORDER ITEM
 const addOrderItem = async function (orderItemData) {
   const orderItem = new OrderItem(orderItemData);
+  await orderItem.save();
+
+  return orderItem;
 }
 
 // TODO: SEARCH ORDERS BY 
@@ -27,5 +29,6 @@ const addOrderItem = async function (orderItemData) {
 // TODO: UPDATE ORDER
 
 module.exports = {
-  addOrder
+  addOrder,
+  addOrderItem
 };
