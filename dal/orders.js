@@ -36,8 +36,40 @@ const getAllOrderStatuses = async function () {
 };
 
 // TODO: SEARCH ORDERS BY
-// ANY 4:
-// PRODUCT NAME, DATA, MIN/MAX COST, STATUS, CUSTOMER EMAIL, CUSTOMER NAME
+const filterOrdersBySearchFields = async function (form) {
+  // Create query builder
+  let query = Order.collection();
+
+  if (form.data.customer_name) {
+    query
+      .query('join', 'users', 'users.id', 'user_id')
+      .where('name', 'like', `%${form.data.customer_name}%`);
+  }
+
+  if (form.data.customer_email) {
+    query
+      .query('join', 'users', 'users.id', 'user_id')
+      .where('email', 'like', `%${form.data.customer_email}%`);
+  }
+
+  if (form.data.order_status_id && form.data.order_status_id != 0) {
+    query.where('order_status_id', '=', form.data.order_status_id);
+  }
+
+  if (form.data.from_order_date) {
+    query.where('order_date', '>=', form.data.from_order_date);
+  }
+
+  if (form.data.to_order_date) {
+    query.where('order_date', '<=', form.data.to_order_date);
+  }
+
+  const orders = await query.fetch({
+    withRelated: ['user', 'orderStatus', 'orderItems']
+  });
+
+  return orders;
+};
 
 // TODO: GET ORDER BY ORDER ID
 
@@ -49,5 +81,6 @@ module.exports = {
   addOrder,
   addOrderItem,
   getAllOrders,
-  getAllOrderStatuses
+  getAllOrderStatuses,
+  filterOrdersBySearchFields
 };
