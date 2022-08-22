@@ -1,5 +1,5 @@
 // *** DEPENDENCIES ***
-const { Order, OrderItem } = require("../models");
+const { Order, OrderItem, OrderStatus } = require('../models');
 
 // *** FUNCTIONS ***
 
@@ -9,29 +9,33 @@ const addOrder = async function (orderData) {
   await order.save();
 
   return order;
-}
+};
 
 const addOrderItem = async function (orderItemData) {
   const orderItem = new OrderItem(orderItemData);
   await orderItem.save();
 
   return orderItem;
-}
+};
 
 const getAllOrders = async function () {
   const orders = await Order.collection().fetch({
     require: false,
-    withRelated: [
-      'user',
-      'orderStatus',
-      'orderItems'
-    ]
+    withRelated: ['user', 'orderStatus', 'orderItems']
   });
 
   return orders;
-}
+};
 
-// TODO: SEARCH ORDERS BY 
+const getAllOrderStatuses = async function () {
+  const orderStatuses = await OrderStatus.fetchAll().map((status) => {
+    return [status.get('id'), status.get('order_status')];
+  });
+
+  return orderStatuses;
+};
+
+// TODO: SEARCH ORDERS BY
 // ANY 4:
 // PRODUCT NAME, DATA, MIN/MAX COST, STATUS, CUSTOMER EMAIL, CUSTOMER NAME
 
@@ -44,5 +48,6 @@ const getAllOrders = async function () {
 module.exports = {
   addOrder,
   addOrderItem,
-  getAllOrders
+  getAllOrders,
+  getAllOrderStatuses
 };
