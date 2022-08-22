@@ -369,7 +369,7 @@ const createOrderSearchForm = (choices) => {
 			widget: widgets.date(),
 			validators: [
 				function (form, field, callback) {
-					if (field.data.to_order_date && field.data > form.data.to_order_date) {
+					if (form.data.to_order_date && field.data > form.data.to_order_date) {
 						callback(
 							'Please enter a date before "To order date"'
 						);
@@ -385,7 +385,7 @@ const createOrderSearchForm = (choices) => {
 			widget: widgets.date(),
 			validators: [
 				function (form, field, callback) {
-					if (field.data.from_order_date && field.data < form.data.from_order_date) {
+					if (form.data.from_order_date && field.data < form.data.from_order_date) {
 						callback(
 							'Please enter date after "From order date"'
 						);
