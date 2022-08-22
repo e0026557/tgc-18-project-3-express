@@ -352,7 +352,7 @@ const createOrderSearchForm = (choices) => {
 			required: false,
 			errorAfterField: true,
 		}),
-		customer_email: fields.email({
+		customer_email: fields.string({
 			required: false,
 			errorAfterField: true,
 		}),
