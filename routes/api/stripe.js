@@ -1,7 +1,9 @@
 // *** DEPENDENCIES ***
 const express = require('express');
 const router = express.Router();
-const dataLayer = require('../../dal/orders');
+const orderDataLayer = require('../../dal/orders');
+const productDataLayer = require('../../dal/products');
+const cartServices = require('../../services/carts');
 const { sendResponse, sendDatabaseError } = require('../../utilities');
 
 const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -29,7 +31,6 @@ router.post(
 				sigHeader,
 				endpointSecret
 			);
-			console.log('event => ', event);
 
 			// // Create new order using information from charge succeeded event
 			// if (event.type == 'charge.succeeded') {
@@ -49,11 +50,11 @@ router.post(
 			) {
 				// Payment session information
 				let stripeSession = event.data.object;
-				console.log('session completed => ', stripeSession);
 
 				// Metadata information
 				const metadata = JSON.parse(event.data.object.metadata.orders);
-				console.log(metadata);
+
+				const userId = metadata[0].user_id;
 
 				// Retrieve charge information from payment intent
 				const paymentIntent = await Stripe.paymentIntents.retrieve(
@@ -62,21 +63,18 @@ router.post(
 				const chargeId = paymentIntent.charges.data[0].id;
 				const charge = await Stripe.charges.retrieve(chargeId);
 				const receipt_url = charge.receipt_url;
-				console.log('receipt_url => ', receipt_url);
 
 				const payment_type = charge.payment_method_details.type;
-				console.log('payment type => ', payment_type);
 
 				// Retrieve selected shipping rate option
 				const shippingRate = await Stripe.shippingRates.retrieve(
 					stripeSession.shipping_rate
 				);
-				console.log(shippingRate);
 
 				// Create new order
 				const orderData = {
 					total_cost: stripeSession.amount_total,
-					user_id: metadata[0].user_id, // Just get user id from any line item
+					user_id: userId, // Just get user id from any line item
 					order_status_id: 3, // Set order status as paid
 					payment_type: payment_type,
 					receipt_url: receipt_url,
@@ -101,20 +99,31 @@ router.post(
 						stripeSession.shipping.address.country
 				};
 
-				const order = await dataLayer.addOrder(orderData);
+				const order = await orderDataLayer.addOrder(orderData);
 				const orderId = order.get('id');
-				console.log(orderId);
 
 				// Create order items using order ID
 				for (let lineItem of metadata) {
+					const variantId = lineItem.variant_id;
+					const quantity = lineItem.quantity;
+
 					const orderItemData = {
 						order_id: orderId,
-						quantity: lineItem.quantity,
-						variant_id: lineItem.variant_id
+						quantity: quantity,
+						variant_id: variantId
 					};
 
-					const orderItem = await dataLayer.addOrderItem(orderItemData);
+					await orderDataLayer.addOrderItem(orderItemData);
+
+					// Update stock of variant
+					const stock = await cartServices.getCurrentStock(variantId);
+					await productDataLayer.updateVariant(variantId, {
+						stock: stock - quantity
+					});
 				}
+
+				// Empty user's cart
+				await cartServices.emptyCart(userId);
 
 				sendResponse(res, 201, {
 					message: 'Order and order items successfully created'
