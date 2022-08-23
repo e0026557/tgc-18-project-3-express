@@ -122,6 +122,7 @@ const api = {
   checkout: require('./routes/api/checkout'),
   stripe: require('./routes/api/stripe'),
   orders: require('./routes/api/orders'),
+  products: require('./routes/api/products'),
   test_checkout: require('./routes/api/test_checkout'),
 };
 
@@ -137,7 +138,8 @@ app.use('/api/accounts', express.json(), api.accounts);
 app.use('/api/cart', express.json(), checkIfAuthenticatedJWT, api.cart);
 app.use('/api/checkout', express.json(), checkIfAuthenticatedJWT, api.checkout);
 app.use('/api/stripe', api.stripe);
-app.use('/api/orders',express.json(), checkIfAuthenticatedJWT, api.orders);
+app.use('/api/orders', express.json(), checkIfAuthenticatedJWT, api.orders);
+app.use('/api/products', express.json(), api.products);
 
 app.use('/api/test_checkout', api.test_checkout);
 
