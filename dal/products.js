@@ -23,7 +23,12 @@ const getAllProducts = async function () {
       'variants',
       'properties',
       'fillingMechanisms',
-      'saleStatus'
+      'saleStatus',
+      'variants.color',
+      'variants.nibFlexibility',
+      'variants.nibSize',
+      'variants.nibShape',
+      'variants.nibMaterial'
     ]
   });
   return products;
