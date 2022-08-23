@@ -21,7 +21,14 @@ const addOrderItem = async function (orderItemData) {
 const getAllOrders = async function () {
   const orders = await Order.collection().fetch({
     require: false,
-    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
+    withRelated: [
+      'user',
+      'orderStatus',
+      'orderItems',
+      'orderItems.variant',
+      'orderItems.variant.fountainPen',
+      'orderItems.variant.fountainPen.brand'
+    ]
   });
 
   return orders;
@@ -44,8 +51,7 @@ const filterOrdersBySearchFields = async function (form) {
       query
         .query('join', 'users', 'users.id', 'user_id')
         .where('name', 'like', `%${form.data.customer_name}%`);
-    }
-    else {
+    } else {
       query
         .query('join', 'users', 'users.id', 'user_id')
         .where('name', 'ilike', `%${form.data.customer_name}%`);
@@ -57,13 +63,11 @@ const filterOrdersBySearchFields = async function (form) {
       query
         .query('join', 'users', 'users.id', 'user_id')
         .where('email', 'like', `%${form.data.customer_email}%`);
-    }
-    else {
+    } else {
       query
         .query('join', 'users', 'users.id', 'user_id')
         .where('email', 'ilike', `%${form.data.customer_email}%`);
     }
-
   }
 
   if (form.data.order_status_id && form.data.order_status_id != 0) {
@@ -79,7 +83,14 @@ const filterOrdersBySearchFields = async function (form) {
   }
 
   const orders = await query.fetch({
-    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
+    withRelated: [
+      'user',
+      'orderStatus',
+      'orderItems',
+      'orderItems.variant',
+      'orderItems.variant.fountainPen',
+      'orderItems.variant.fountainPen.brand'
+    ]
   });
 
   return orders;
@@ -90,7 +101,14 @@ const getOrderById = async function (orderId) {
     id: orderId
   }).fetch({
     require: true,
-    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
+    withRelated: [
+      'user',
+      'orderStatus',
+      'orderItems',
+      'orderItems.variant',
+      'orderItems.variant.fountainPen',
+      'orderItems.variant.fountainPen.brand'
+    ]
   });
 
   return order;
@@ -104,7 +122,28 @@ const updateOrder = async function (orderId, orderData) {
   order.set(orderData);
   await order.save();
   return true;
-}
+};
+
+const getAllOrdersByUserId = async function (userId) {
+  // Get all orders by user ID
+  const orders = await Order.collection()
+    .where({
+      user_id: userId
+    })
+    .fetch({
+      require: false,
+      withRelated: [
+        'user',
+        'orderStatus',
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.fountainPen',
+        'orderItems.variant.fountainPen.brand'
+      ]
+    });
+
+  return orders;
+};
 
 module.exports = {
   addOrder,
@@ -113,5 +152,6 @@ module.exports = {
   getAllOrderStatuses,
   filterOrdersBySearchFields,
   getOrderById,
-  updateOrder
+  updateOrder,
+  getAllOrdersByUserId
 };
