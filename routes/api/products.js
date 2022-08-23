@@ -18,13 +18,29 @@ router.get('/', async function (req, res) {
   }
 });
 
+router.get('/search_options', async function (req, res) {
+  // Retrieve all options for searching products and variants
+  const { saleStatuses, ...productOptions } =
+    await dataLayer.getAllProductFormChoices();
+  const variantOptions = await dataLayer.getAllVariantFormChoices();
+
+  const options = {
+    ...productOptions,
+    ...variantOptions
+  };
+
+  sendResponse(res, 200, {
+    options
+  });
+});
+
 router.get('/:product_id', async function (req, res) {
   // Retrieve a product and its variants
   try {
     const product = await dataLayer.getProductById(req.params.product_id);
     sendResponse(res, 200, {
       product
-    })
+    });
   } catch (error) {
     console.log(error);
     sendDatabaseError(res);
