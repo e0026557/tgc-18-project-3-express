@@ -35,21 +35,35 @@ const getAllOrderStatuses = async function () {
   return orderStatuses;
 };
 
-// TODO: SEARCH ORDERS BY
 const filterOrdersBySearchFields = async function (form) {
   // Create query builder
   let query = Order.collection();
 
   if (form.data.customer_name) {
-    query
-      .query('join', 'users', 'users.id', 'user_id')
-      .where('name', 'like', `%${form.data.customer_name}%`);
+    if (process.env.DB_DRIVER == 'mysql') {
+      query
+        .query('join', 'users', 'users.id', 'user_id')
+        .where('name', 'like', `%${form.data.customer_name}%`);
+    }
+    else {
+      query
+        .query('join', 'users', 'users.id', 'user_id')
+        .where('name', 'ilike', `%${form.data.customer_name}%`);
+    }
   }
 
   if (form.data.customer_email) {
-    query
-      .query('join', 'users', 'users.id', 'user_id')
-      .where('email', 'like', `%${form.data.customer_email}%`);
+    if (process.env.DB_DRIVER == 'mysql') {
+      query
+        .query('join', 'users', 'users.id', 'user_id')
+        .where('email', 'like', `%${form.data.customer_email}%`);
+    }
+    else {
+      query
+        .query('join', 'users', 'users.id', 'user_id')
+        .where('email', 'ilike', `%${form.data.customer_email}%`);
+    }
+
   }
 
   if (form.data.order_status_id && form.data.order_status_id != 0) {
@@ -65,7 +79,7 @@ const filterOrdersBySearchFields = async function (form) {
   }
 
   const orders = await query.fetch({
-    withRelated: ['user', 'orderStatus', 'orderItems']
+    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
   });
 
   return orders;
