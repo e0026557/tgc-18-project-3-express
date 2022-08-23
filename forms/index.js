@@ -398,6 +398,37 @@ const createOrderSearchForm = (choices) => {
 	}, options);
 };
 
+const createUpdateOrderForm = (choices) => {
+	return forms.create({
+		order_status_id: fields.string({
+			label: 'Order status',
+			required: true,
+			errorAfterField: true,
+			choices: choices.orderStatuses,
+			widget: widgets.select(),
+		}),
+		order_date: fields.date({
+			widget: widgets.hidden()
+		}),
+		delivery_date: fields.date({
+			required: false,
+			errorAfterField: true,
+			widget: widgets.date(),
+			validators: [
+				function (form, field, callback) {
+					if (form.data.delivery_date && field.data < form.data.order_date) {
+						callback(
+							`Please enter a date after order date ${form.data.order_date}`
+						);
+					} else {
+						callback();
+					}
+				}
+			]
+		})
+	}, options);
+};
+
 module.exports = {
 	bootstrapField,
 	createProductForm,
@@ -405,5 +436,6 @@ module.exports = {
 	createSearchForm,
 	createRegistrationForm,
 	createLoginForm,
-	createOrderSearchForm
+	createOrderSearchForm,
+	createUpdateOrderForm
 };
