@@ -21,7 +21,7 @@ const addOrderItem = async function (orderItemData) {
 const getAllOrders = async function () {
   const orders = await Order.collection().fetch({
     require: false,
-    withRelated: ['user', 'orderStatus', 'orderItems']
+    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
   });
 
   return orders;
