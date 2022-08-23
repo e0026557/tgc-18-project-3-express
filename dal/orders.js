@@ -85,16 +85,33 @@ const filterOrdersBySearchFields = async function (form) {
   return orders;
 };
 
-// TODO: GET ORDER BY ORDER ID
+const getOrderById = async function (orderId) {
+  const order = await Order.where({
+    id: orderId
+  }).fetch({
+    require: true,
+    withRelated: ['user', 'orderStatus', 'orderItems', 'orderItems.variant', 'orderItems.variant.fountainPen', 'orderItems.variant.fountainPen.brand']
+  });
 
-// TODO: GET ORDER ITEMS BY ORDER ID
+  return order;
+};
 
-// TODO: UPDATE ORDER
+const updateOrder = async function (orderId, orderData) {
+  // Get order to be updated
+  const order = await getOrderById(orderId);
+
+  // Set delivery date and order status
+  order.set(orderData);
+  await order.save();
+  return true;
+}
 
 module.exports = {
   addOrder,
   addOrderItem,
   getAllOrders,
   getAllOrderStatuses,
-  filterOrdersBySearchFields
+  filterOrdersBySearchFields,
+  getOrderById,
+  updateOrder
 };
