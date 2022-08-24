@@ -48,9 +48,20 @@ const addBlacklistedToken = async function (refreshToken) {
 	return token;
 };
 
+const getUserById = async function (userId) {
+	const user = await User.where({
+		id: userId
+	}).fetch({
+		require: true,
+		withRelated: ['role']
+	});
+	return user;
+}
+
 module.exports = {
 	addUser,
 	getUserByCredentials,
 	getBlacklistedToken,
-	addBlacklistedToken
+	addBlacklistedToken,
+	getUserById
 };
