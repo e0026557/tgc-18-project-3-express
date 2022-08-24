@@ -6,14 +6,14 @@ Profile
 
 {{#block 'content'}}
 
-<div class="container-profile">
+<div class="container-profile mt-5">
   <div class="profile-box">
     <h4>User Profile</h4>
-    <span>Name: {{user.name}}</span>
-    <span>Username: {{user.username}}</span>
-    <span>Email: {{user.email}}</span>
-    <span>Contact Number: {{user.contact_number}}</span>
-    <span>Account Type: {{user.role.role}}</span>
+    <span><strong class="profile-field-header">Name:</strong> {{user.name}}</span>
+    <span><strong class="profile-field-header">Username:</strong> {{user.username}}</span>
+    <span><strong class="profile-field-header">Email:</strong> {{user.email}}</span>
+    <span><strong class="profile-field-header">Contact Number:</strong> {{user.contact_number}}</span>
+    <span><strong class="profile-field-header">Account Type:</strong> {{user.role.role}}</span>
   </div>
 </div>
 
