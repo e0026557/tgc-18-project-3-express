@@ -1,0 +1,22 @@
+{{#extends 'base'}}
+
+{{#block 'subtitle'}}
+Profile
+{{/block}}
+
+{{#block 'content'}}
+
+<div class="container-profile">
+  <div class="profile-box">
+    <h4>User Profile</h4>
+    <span>Name: {{user.name}}</span>
+    <span>Username: {{user.username}}</span>
+    <span>Email: {{user.email}}</span>
+    <span>Contact Number: {{user.contact_number}}</span>
+    <span>Account Type: {{user.role.role}}</span>
+  </div>
+</div>
+
+{{/block}}
+
+{{/extends}}

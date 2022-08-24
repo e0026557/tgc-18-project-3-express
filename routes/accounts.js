@@ -1,13 +1,13 @@
 //  *** DEPENDENCIES ***
 const express = require('express');
 const router = express.Router();
-
 const dataLayer = require('../dal/accounts');
 const {
   createRegistrationForm,
   bootstrapField,
   createLoginForm
 } = require('../forms');
+const { checkIfAuthenticated } = require('../middlewares');
 
 // *** ROUTES ***
 
@@ -77,11 +77,13 @@ router.post('/login', async function (req, res) {
       if (!user) {
         req.flash('error_messages', 'Invalid username and/or password');
         res.redirect('/accounts/login');
-      }
-      else {
+      } else {
         // Check that user is either an admin or staff (role id is 2 or 3)
         if (user.get('role_id') == 1) {
-          req.flash('error_messages', 'Invalid username and/or password');
+          req.flash(
+            'error_messages',
+            'Invalid username and/or password'
+          );
           res.redirect('/accounts/login');
           return;
         }
@@ -93,14 +95,16 @@ router.post('/login', async function (req, res) {
           role: user.related('role').get('role')
         };
 
-        req.flash('success_messages', `Welcome back, ${user.get('username')}`);
+        req.flash(
+          'success_messages',
+          `Welcome back, ${user.get('username')}`
+        );
 
         // Redirect user to intended path before login
         const redirectTo = req.session.redirectTo || '/products';
         req.session.redirectTo = null; // clear redirectTo
         res.redirect(redirectTo);
       }
-
     },
     error: function (form) {
       res.render('accounts/login', {
@@ -120,6 +124,22 @@ router.get('/logout', function (req, res) {
   req.flash('success_messages', 'Successfully logged out');
 
   res.redirect('/accounts/login');
-})
+});
+
+router.get('/view', checkIfAuthenticated, async function (req, res) {
+  const userId = req.session.user.id;
+  try {
+    const user = await dataLayer.getUserById(userId);
+    console.log(user.toJSON());
+    res.render('accounts/profile', {
+      user: user.toJSON()
+    });
+  } catch (error) {
+    console.log(error);
+    req.flash('error_messages', 'An error occurred while retrieving account information. Please try again');
+    res.redirect('/accounts/view');
+  }
+
+});
 
 module.exports = router;
