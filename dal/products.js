@@ -383,6 +383,113 @@ const filterProductsBySearchFields = async function (form) {
 	return products;
 };
 
+const searchProducts = async function (searchFields) {
+	// Create query builder
+	let query = FountainPen.collection().query('join', 'variants', 'fountain_pen_id', 'fountain_pens.id');
+
+	// Search criteria:
+	// brand (id), model (text), filling mechanism (id), cap type (id), properties (id)
+	// min/max cost, nib material (id), nib size (id), nib shape (id), nib flexibility (id), color (id)
+
+	// Product search
+	if (searchFields.brand_id && searchFields.brand_id != 0) {
+		query.where('brand_id', '=', searchFields.brand_id);
+	}
+
+	if (searchFields.model) {
+		// MySQL syntax (case insensitive by default)
+		if (process.env.DB_DRIVER == 'mysql') {
+			query.where('model', 'like', `%${searchFields.model}%`);
+		} else {
+			query.where('model', 'ilike', `%${searchFields.model}%`);
+		}
+	}
+
+	if (searchFields.fillingMechanisms) {
+		query
+			.query(
+				'join',
+				'filling_mechanisms_fountain_pens',
+				'fountain_pens.id',
+				'fountain_pen_id'
+			)
+			.where(
+				'filling_mechanism_id',
+				'in',
+				searchFields.fillingMechanisms.split(',')
+			);
+	}
+
+	if (searchFields.cap_type_id && searchFields.cap_type_id != 0) {
+		query.where('cap_type_id', '=', searchFields.cap_type_id);
+	}
+
+	if (searchFields.properties) {
+		query
+			.query(
+				'join',
+				'fountain_pens_properties',
+				'fountain_pens.id',
+				'fountain_pen_id'
+			)
+			.where(
+				'property_id',
+				'in',
+				searchFields.properties.split(',')
+			);
+	}
+
+	// Variant search
+	if (searchFields.min_cost) {
+		query.where('cost', '>=', searchFields.min_cost);
+	}
+
+	if (searchFields.max_cost) {
+		query.where('cost', '<=', searchFields.max_cost);
+	}
+
+
+	if (searchFields.nib_material_id && searchFields.nib_material_id != 0) {
+		query.where('nib_material_id', '=', searchFields.nib_material_id);
+	}
+
+	if (searchFields.nib_shape_id && searchFields.nib_shape_id != 0) {
+		query.where('nib_shape_id', '=', searchFields.nib_shape_id);
+	}
+
+	if (searchFields.nib_size_id && searchFields.nib_size_id != 0) {
+		query.where('nib_size_id', '=', searchFields.nib_size_id);
+	}
+
+	if (searchFields.nib_flexibility_id && searchFields.nib_flexibility_id != 0) {
+		query.where('nib_flexibility_id', '=', searchFields.nib_flexibility_id);
+	}
+
+	if (searchFields.color_id && searchFields.color_id != 0) {
+		query.where('color_id', '=', searchFields.color_id);
+	}
+
+	let products = (
+		await query.fetch({
+			withRelated: [
+				'brand',
+				'capType',
+				'variants',
+				'properties',
+				'fillingMechanisms',
+				'saleStatus',
+				'variants.color',
+				'variants.nibFlexibility',
+				'variants.nibSize',
+				'variants.nibShape',
+				'variants.nibMaterial'
+			]
+		})
+	).toJSON();
+
+	return products;
+}
+
 module.exports = {
 	getAllProperties,
 	getAllFillingMechanisms,
@@ -406,5 +513,6 @@ module.exports = {
 	addVariant,
 	updateVariant,
 	deleteVariant,
-	filterProductsBySearchFields
+	filterProductsBySearchFields,
+	searchProducts
 };

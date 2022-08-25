@@ -6,9 +6,15 @@ const { sendResponse, sendDatabaseError } = require('../../utilities');
 
 // *** ROUTES ***
 router.get('/', async function (req, res) {
+  // Search criteria:
+  // brand, model, filling mechanism, cap type, properties
+  // cost, nib material, nib size, nib shape, nib flexibility, color
+
+  const searchFields = req.query;
+
   // Retrieve all products
   try {
-    const products = await dataLayer.getAllProducts();
+    const products = await dataLayer.searchProducts(searchFields);
     sendResponse(res, 200, {
       products
     });
