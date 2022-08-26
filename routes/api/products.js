@@ -26,13 +26,43 @@ router.get('/', async function (req, res) {
 
 router.get('/search_options', async function (req, res) {
   // Retrieve all options for searching products and variants
-  const { saleStatuses, ...productOptions } =
-    await dataLayer.getAllProductFormChoices();
-  const variantOptions = await dataLayer.getAllVariantFormChoices();
+  const brands = await dataLayer.getAllBrands();
+  brands.unshift([0, '--- Any Brand ---']);
+
+  const capTypes = await dataLayer.getAllCapTypes();
+  capTypes.unshift([0, '--- Any Cap Type ---']);
+
+  const properties = await dataLayer.getAllProperties();
+  properties.unshift([0, '--- Any Property ---']);
+
+  const fillingMechanisms = await dataLayer.getAllFillingMechanisms();
+  fillingMechanisms.unshift([0, '--- Any Filling Mechanism ---']);
+
+  const nibFlexibilities = await dataLayer.getAllNibFlexibilities();
+  nibFlexibilities.unshift([0, '--- Any Nib Flexibility ---']);
+
+  const nibMaterials = await dataLayer.getAllNibMaterials();
+  nibMaterials.unshift([0, '--- Any Nib Material ---']);
+
+  const nibShapes = await dataLayer.getAllNibShapes();
+  nibShapes.unshift([0, '--- Any Nib Shape ---']);
+
+  const nibSizes = await dataLayer.getAllNibSizes();
+  nibSizes.unshift([0, '--- Any Nib Size ---']);
+
+  const colors = await dataLayer.getAllColors();
+  colors.unshift([0, '--- Any Color ---']);
 
   const options = {
-    ...productOptions,
-    ...variantOptions
+    brands,
+    capTypes,
+    properties,
+    fillingMechanisms,
+    nibFlexibilities,
+    nibMaterials,
+    nibShapes,
+    nibSizes,
+    colors
   };
 
   sendResponse(res, 200, {
