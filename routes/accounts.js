@@ -130,7 +130,6 @@ router.get('/view', checkIfAuthenticated, async function (req, res) {
   const userId = req.session.user.id;
   try {
     const user = await dataLayer.getUserById(userId);
-    console.log(user.toJSON());
     res.render('accounts/profile', {
       user: user.toJSON()
     });
