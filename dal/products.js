@@ -405,7 +405,7 @@ const searchProducts = async function (searchFields) {
 		}
 	}
 
-	if (searchFields.fillingMechanisms) {
+	if (searchFields.filling_mechanisms) {
 		query
 			.query(
 				'join',
@@ -416,7 +416,7 @@ const searchProducts = async function (searchFields) {
 			.where(
 				'filling_mechanism_id',
 				'in',
-				searchFields.fillingMechanisms.split(',')
+				searchFields.filling_mechanisms.split(',')
 			);
 	}
 
