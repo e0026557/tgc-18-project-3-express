@@ -411,7 +411,7 @@ const searchProducts = async function (searchFields) {
 				'join',
 				'filling_mechanisms_fountain_pens',
 				'fountain_pens.id',
-				'fountain_pen_id'
+				'filling_mechanisms_fountain_pens.fountain_pen_id'
 			)
 			.where(
 				'filling_mechanism_id',
@@ -430,7 +430,7 @@ const searchProducts = async function (searchFields) {
 				'join',
 				'fountain_pens_properties',
 				'fountain_pens.id',
-				'fountain_pen_id'
+				'fountain_pens_properties.fountain_pen_id'
 			)
 			.where(
 				'property_id',
