@@ -17,6 +17,7 @@
 - #d6ad60 (gold)
 -- Tints:
 - #debd80
+- #ebd6b0
 
 */
 
@@ -62,6 +63,16 @@ main {
   color: #debd80 !important;
 }
 
+/* --- Login / Register --- */
+.login-box,
+.register-box {
+  background-color: #ebd6b0;
+  padding: 20px 35px;
+  border-radius: 24px;
+  width: 320px;
+}
+
+/* --- Account Profile --- */
 .container-profile {
   height: 100%;
   width: 100%;
@@ -70,10 +81,10 @@ main {
 }
 
 .profile-box {
-  background-color: #debd80;
+  background-color: #ebd6b0;
   width: fit-content;
   height: fit-content;
-  padding: 15px 30px;
+  padding: 20px 35px;
   border-radius: 24px;
   display: flex;
   flex-direction: column;
@@ -85,7 +96,14 @@ main {
 }
 
 /* *** MEDIUM SCREEN SETTINGS (768PX AND ABOVE) *** */
-@media screen and (min-width: 768px) {}
+@media screen and (min-width: 768px) {
+
+  /* --- Login / Register --- */
+  .login-box,
+  .register-box {
+    width: 500px;
+  }
+}
 
 /* *** LARGE SCREEN SETTINGS (992PX AND ABOVE) *** */
 @media screen and (min-width: 992px) {}

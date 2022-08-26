@@ -1,11 +1,12 @@
 {{#extends 'base'}}
 
 {{#block 'subtitle'}}
-  Login
+Login
 {{/block}}
 
 {{#block 'content'}}
 
+<div class="container login-box mt-5">
   <h1>Login</h1>
 
   <form method="post">
@@ -13,8 +14,9 @@
     {{> csrfToken}}
 
     <input type="submit" value="Login" class="btn btn-primary my-3">
-    
   </form>
+
+</div>
 
 {{/block}}
 

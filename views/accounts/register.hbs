@@ -6,14 +6,17 @@ Register
 
 {{#block 'content'}}
 
-<h1>Register</h1>
+<div class="container register-box mt-4 mt-lg-5">
+  <h1>Register</h1>
 
-<form method="post">
+  <form method="post">
 
-  {{{form}}}
-  {{> csrfToken}}
-  <input type="submit" value="Register" class="btn btn-primary my-3">
-</form>
+    {{{form}}}
+    {{> csrfToken}}
+    <input type="submit" value="Register" class="btn btn-primary my-3">
+  </form>
+
+</div>
 
 {{/block}}
 
