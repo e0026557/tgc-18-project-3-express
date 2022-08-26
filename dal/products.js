@@ -405,7 +405,7 @@ const searchProducts = async function (searchFields) {
 		}
 	}
 
-	if (searchFields.filling_mechanisms) {
+	if (searchFields.filling_mechanisms && searchFields.filling_mechanisms != 0) {
 		query
 			.query(
 				'join',
@@ -424,7 +424,7 @@ const searchProducts = async function (searchFields) {
 		query.where('cap_type_id', '=', searchFields.cap_type_id);
 	}
 
-	if (searchFields.properties) {
+	if (searchFields.properties && searchFields.properties != 0) {
 		query
 			.query(
 				'join',
