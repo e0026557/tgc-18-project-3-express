@@ -80,7 +80,20 @@ router.post('/register', async function (req, res) {
 
 	// Create new Customer user
 	try {
-		const user = await dataLayer.addUser(userData, 1);
+		// Check that whether user already exist before registering user
+		const user = await dataLayer.getUserByCredentials({
+			username,
+			password
+		})
+
+		if (user) {
+			sendResponse(res, 400, {
+				error: 'User already exists'
+			});
+			return;
+		}
+
+		await dataLayer.addUser(userData, 1);
 
 		sendResponse(res, 201, { message: 'User successfully registered' });
 	} catch (error) {
