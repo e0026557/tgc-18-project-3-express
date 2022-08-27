@@ -58,10 +58,21 @@ const getUserById = async function (userId) {
 	return user;
 }
 
+const isUsernameTaken = async function (username) {
+	const user = await User.where({
+		username: username
+	}).fetch({
+		require: false,
+	});
+
+	return user ? true : false;
+}
+
 module.exports = {
 	addUser,
 	getUserByCredentials,
 	getBlacklistedToken,
 	addBlacklistedToken,
-	getUserById
+	getUserById,
+	isUsernameTaken
 };

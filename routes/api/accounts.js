@@ -32,6 +32,28 @@ const generateAccessToken = function (
 
 // *** ROUTES ***
 
+router.get('/username_taken', async function (req, res) {
+	try {
+		// Check if username is taken
+		const usernameExists = await dataLayer.isUsernameTaken(req.query.username);
+
+		if (usernameExists) {
+			sendResponse(res, 200, {
+				message: 'not available'
+			});
+		}
+		else {
+			sendResponse(res, 200, {
+				message: 'available'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		sendDatabaseError(res);
+	}
+
+})
+
 router.post('/register', async function (req, res) {
 	// name, username, email, password, contact_number, role_id
 	// Extract and validate user data from req.body
@@ -81,12 +103,9 @@ router.post('/register', async function (req, res) {
 	// Create new Customer user
 	try {
 		// Check that whether user already exist before registering user
-		const user = await dataLayer.getUserByCredentials({
-			username,
-			password
-		})
+		const usernameExists = await dataLayer.isUsernameTaken(username);
 
-		if (user) {
+		if (usernameExists) {
 			sendResponse(res, 400, {
 				error: 'User already exists'
 			});
