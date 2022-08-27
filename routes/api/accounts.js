@@ -82,7 +82,7 @@ router.post('/register', async function (req, res) {
 	try {
 		const user = await dataLayer.addUser(userData, 1);
 
-		sendResponse(res, 201, { user: user });
+		sendResponse(res, 201, { message: 'User successfully registered' });
 	} catch (error) {
 		console.log(error);
 		sendDatabaseError(res);
