@@ -7,7 +7,7 @@ const getCartByUserId = async function (userId) {
 	const cartItems = await CartItem.collection()
 		.where({
 			user_id: userId
-		})
+		}).orderBy('id')
 		.fetch({
 			require: false,
 			withRelated: [

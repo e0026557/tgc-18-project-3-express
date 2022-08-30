@@ -470,7 +470,7 @@ const searchProducts = async function (searchFields) {
 	}
 
 	let products = (
-		await query.fetch({
+		await query.orderBy('id').fetch({
 			withRelated: [
 				'brand',
 				'capType',
