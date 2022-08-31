@@ -123,7 +123,6 @@ const api = {
   stripe: require('./routes/api/stripe'),
   orders: require('./routes/api/orders'),
   products: require('./routes/api/products'),
-  test_checkout: require('./routes/api/test_checkout'),
 };
 
 app.use('/', landingRoutes);
