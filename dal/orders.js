@@ -19,7 +19,7 @@ const addOrderItem = async function (orderItemData) {
 };
 
 const getAllOrders = async function () {
-  const orders = await Order.collection().fetch({
+  const orders = await Order.collection().orderBy('id', 'DESC').fetch({
     require: false,
     withRelated: [
       'user',
@@ -129,7 +129,7 @@ const getAllOrdersByUserId = async function (userId) {
   const orders = await Order.collection()
     .where({
       user_id: userId
-    })
+    }).orderBy('id', 'desc')
     .fetch({
       require: false,
       withRelated: [
