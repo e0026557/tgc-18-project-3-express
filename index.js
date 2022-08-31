@@ -113,7 +113,6 @@ const landingRoutes = require('./routes/landing');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const accountRoutes = require('./routes/accounts');
-const userRoutes = require('./routes/users');
 const cloudinaryRoutes = require('./routes/cloudinary');
 
 const api = {
