@@ -129,7 +129,6 @@ app.use('/', landingRoutes);
 app.use('/products', checkIfAuthenticated, productRoutes);
 app.use('/orders', checkIfAuthenticated, orderRoutes);
 app.use('/accounts', accountRoutes);
-app.use('/users', checkIfAuthenticated, userRoutes);
 app.use('/cloudinary', cloudinaryRoutes);
 
 // API routes
