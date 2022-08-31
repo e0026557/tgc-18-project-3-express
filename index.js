@@ -141,8 +141,6 @@ app.use('/api/stripe', api.stripe);
 app.use('/api/orders', express.json(), checkIfAuthenticatedJWT, api.orders);
 app.use('/api/products', express.json(), api.products);
 
-app.use('/api/test_checkout', api.test_checkout);
-
 // *** SERVER ***
 app.listen(PORT, function () {
   console.log('Server has started')
