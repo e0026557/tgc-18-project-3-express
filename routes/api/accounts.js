@@ -168,7 +168,7 @@ router.get('/profile', checkIfAuthenticatedJWT, function (req, res) {
 	res.json(user);
 });
 
-router.post('/refresh', async function (req, res) {
+router.post('/refresh', checkIfAuthenticatedJWT, async function (req, res) {
 	// Get the refreshToken from req.body (need not be in authorisation header for refresh tokens)
 	const refreshToken = req.body.refreshToken;
 
