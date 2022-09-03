@@ -1,5 +1,4 @@
 // *** DEPENDENCIES ***
-// const { model } = require('../bookshelf');
 const bookshelf = require('../bookshelf');
 
 // *** Models ***
