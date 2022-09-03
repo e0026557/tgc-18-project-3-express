@@ -10,11 +10,6 @@ const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // *** ROUTES ***
 
-// TODO:
-// 1. Create new order
-// 2. Create new order items
-// 3. Update stock of variants
-// 4. Clear user cart
 router.post(
 	'/process_payment',
 	express.raw({ type: 'application/json' }),
@@ -31,17 +26,6 @@ router.post(
 				sigHeader,
 				endpointSecret
 			);
-
-			// // Create new order using information from charge succeeded event
-			// if (event.type == 'charge.succeeded') {
-			// 	// Payment session information
-			// 	let stripeSession = event.data.object;
-			// 	console.log('charge succeeded => ', stripeSession);
-
-			// 	sendResponse(res, 200, {
-			// 		message: 'Charge success'
-			// 	});
-			// }
 
 			// Create new order using information from checkout event
 			if (

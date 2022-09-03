@@ -162,12 +162,6 @@ router.post('/login', async function (req, res) {
 	});
 });
 
-// (FOR TESTING PURPOSES)
-router.get('/profile', checkIfAuthenticatedJWT, function (req, res) {
-	const user = req.user;
-	res.json(user);
-});
-
 router.post('/refresh', checkIfAuthenticatedJWT, async function (req, res) {
 	// Get the refreshToken from req.body (need not be in authorisation header for refresh tokens)
 	const refreshToken = req.body.refreshToken;
