@@ -117,9 +117,17 @@ const getOrderById = async function (orderId) {
 const updateOrder = async function (orderId, orderData) {
   // Get order to be updated
   const order = await getOrderById(orderId);
+  const {delivery_date, order_status_id} = orderData;
 
   // Set delivery date and order status
-  order.set(orderData);
+  if (delivery_date) {
+    order.set('delivery_date', delivery_date);
+  }
+  else {
+    order.set('delivery_date', null);
+  }
+
+  order.set('order_status_id', order_status_id);
   await order.save();
   return true;
 };
