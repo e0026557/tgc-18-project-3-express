@@ -82,7 +82,7 @@ router.post('/:order_id/update', async function (req, res) {
   });
   orderForm.handle(req, {
     success: async function (form) {
-      const { order_date, orderData } = form.data;
+      const { order_date, ...orderData } = form.data;
 
       try {
         await dataLayer.updateOrder(orderId, orderData);
